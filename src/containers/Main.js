@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setX, setO, cickSymbol, cickSymbol2, getState } from '../actions/index.js';
+import { ActionCreators as UndoActionCreators } from 'redux-undo';
+import { setX, setO, cickSymbol, cickSymbol2, getState, undoCickedSymbol } from '../actions/index.js';
 
 const style = {
   body: {
@@ -77,7 +78,10 @@ class App extends Component {
     }
     for (let l = 0; l < this.props.talePast.length; l++) {
       if (this.props.tale.cells === this.props.talePast[l]) {
-         // this.props.undoCickedSymbol(index);
+        // this.props.tale.cells = this.props.talePast[l].cells;
+        // (geht nicht, da store read-only)
+        // => {this.props.onUndo} ??
+        // Wird messy
       }
     }
   }
@@ -103,7 +107,15 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ setX, setO, cickSymbol, cickSymbol2, getState }, dispatch);
+  return bindActionCreators({
+    setX,
+    setO,
+    cickSymbol,
+    cickSymbol2,
+    getState,
+    undoCickedSymbol,
+    onUndo: UndoActionCreators.undo,
+  }, dispatch);
 }
 
 App.propTypes = {

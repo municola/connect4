@@ -63,6 +63,10 @@ const tale = (state = initialState, action) => {
     case 'GET_STATE' : {
       return state;
     }
+    case 'UNDO_CICKED_SYMBOL' : {
+      // something else
+      return state;
+    }
     default: {
       return state;
     }
@@ -70,7 +74,7 @@ const tale = (state = initialState, action) => {
 };
 
 const undoableTale = undoable(tale, {
-  filter: excludeAction(['CICK_SYMBOL', 'CICK_SYMBOL2']),
+  // filter: excludeAction(['CICK_SYMBOL', 'CICK_SYMBOL2']),
   initTypes: ['@@redux/INIT', '@@INIT'],
 });
 
