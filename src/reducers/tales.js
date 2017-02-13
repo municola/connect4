@@ -14,8 +14,6 @@ const initialState = {
   count2: 0,
 };
 
-let count2 = 0;
-
 const tale = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_X': {
@@ -80,3 +78,5 @@ const undoableTale = undoable(tale, {
 
 export default undoableTale;
 
+// hash-map
+// join
