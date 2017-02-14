@@ -17,7 +17,7 @@ const tale = (state = initialState, action) => {
   switch (action.type) {
     case 'CLICK_BUTTON': {
       const index = action.index;
-      let tempStore = state;
+      let tempStore = { ...state };
 
       if (tempStore.cells[index] === 'X' || tempStore.cells[index] === 'O') {
         // Kick the Symbol
@@ -101,7 +101,7 @@ const tale = (state = initialState, action) => {
           }
         }
       }
-      console.log('2', tempStore);
+      console.log(tempStore.cells);
       return tempStore;
     }
     default: {
