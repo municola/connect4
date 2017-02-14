@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ActionCreators as UndoActionCreators } from 'redux-undo';
-import { setX, setO, cickSymbol, cickSymbol2, getState, undoCickedSymbol } from '../actions/index.js';
+import { clickButton } from '../actions/index.js';
 
 const style = {
   body: {
@@ -31,7 +30,7 @@ class App extends Component {
     return this.props.tale.cells.map((tales, index) => {
       return (
         <button
-          onClick={() => this.handleOnClick(index)}
+          onClick={() => this.props.clickButton(index)}
           style={style.button}
           key={index}
         >{this.props.tale.cells[index]}</button>
@@ -107,15 +106,7 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({
-    setX,
-    setO,
-    cickSymbol,
-    cickSymbol2,
-    getState,
-    undoCickedSymbol,
-    onUndo: UndoActionCreators.undo,
-  }, dispatch);
+  return bindActionCreators({ clickButton }, dispatch);
 }
 
 App.propTypes = {

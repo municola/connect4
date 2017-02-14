@@ -1,4 +1,4 @@
-import undoable, { excludeAction, distinctState } from 'redux-undo';
+import undoable from 'redux-undo';
 
 const initialState = {
   winner: false,
@@ -10,60 +10,78 @@ const initialState = {
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
   ],
-  count: 0,
-  count2: 0,
+  count: 1,
 };
+
+function setSymbol(tempStore, action) {
+  console.log(tempStore.count);
+  if (tempStore.count === 0) {
+    tempStore = {
+      ...tempStore,
+      cells: [
+        ...tempStore.cells.slice(0, action.index),
+        tempStore.cells[action.index] = 'X',
+        ...tempStore.cells.slice(action.index + 1),
+      ],
+      count: 1,
+    };
+  } else {
+    tempStore = {
+      ...tempStore,
+      cells: [
+        ...tempStore.cells.slice(0, action.index),
+        tempStore.cells[action.index] = 'O',
+        ...tempStore.cells.slice(action.index + 1),
+      ],
+      count: 0,
+    };
+  }
+}
+
+function kickSymbol(tempStore, action) {
+  let id = action.index;
+  while (tempStore.cells[id] === 'X' || tempStore.cells[id] === 'O') {
+    if (id > 6) {
+      tempStore = {
+        ...tempStore,
+        cells: [
+          ...tempStore.cells.slice(0, id),
+          tempStore.cells[id] = tempStore.cells[id - 7],
+          ...tempStore.cells.slice(id + 1),
+        ],
+      };
+    } else {
+      tempStore = {
+        ...tempStore,
+        cells: [
+          ...tempStore.cells.slice(0, id),
+          tempStore.cells[id] = ' ',
+          ...tempStore.cells.slice(id + 1),
+        ],
+      };
+    }
+    id -= 7;
+  }
+}
 
 const tale = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_X': {
-      return {
-        ...state,
-        cells: [
-          ...state.cells.slice(0, action.index),
-          state.cells[action.index] = 'X',
-          ...state.cells.slice(action.index + 1),
-        ],
-        count: 1,
-      };
-    }
-    case 'SET_O': {
-      return {
-        ...state,
-        cells: [
-          ...state.cells.slice(0, action.index),
-          state.cells[action.index] = 'O',
-          ...state.cells.slice(action.index + 1),
-        ],
-        count: 0,
-      };
-    }
-    case 'CICK_SYMBOL' : {
-      return {
-        ...state,
-        cells: [
-          ...state.cells.slice(0, action.index),
-          state.cells[action.index] = state.cells[action.index - 7],
-          ...state.cells.slice(action.index + 1),
-        ],
-      };
-    }
-    case 'CICK_SYMBOL2' : {
-      return {
-        ...state,
-        cells: [
-          ...state.cells.slice(0, action.index),
-          state.cells[action.index] = ' ',
-          ...state.cells.slice(action.index + 1),
-        ],
-      };
-    }
-    case 'GET_STATE' : {
-      return state;
-    }
-    case 'UNDO_CICKED_SYMBOL' : {
-      // something else
-      return state;
+    case 'CLICK_BUTTON': {
+      const index = action.index;
+      const tempStore = { ...state };
+
+      console.log(tempStore);
+
+      if (tempStore.cells[index] === 'X' || tempStore.cells[index] === 'O') {
+        kickSymbol(tempStore, action);
+      } else if (tempStore.cells[index] === ' ') {
+        if (index > 34) {
+          setSymbol(tempStore, action);
+        } else if (tempStore.cells[index + 7] !== ' ') {
+          setSymbol(tempStore, action);
+        }
+      }
+      return tempStore;
     }
     default: {
       return state;
@@ -71,10 +89,7 @@ const tale = (state = initialState, action) => {
   }
 };
 
-const undoableTale = undoable(tale, {
-  // filter: excludeAction(['CICK_SYMBOL', 'CICK_SYMBOL2']),
-  initTypes: ['@@redux/INIT', '@@INIT'],
-});
+const undoableTale = undoable(tale, {});
 
 export default undoableTale;
 
