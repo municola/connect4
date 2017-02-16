@@ -27,62 +27,16 @@ const style = {
 
 class App extends Component {
   getButtons() {
-    return this.props.tale.cells.map((tales, index) => {
+    console.log(this.props.tale.get(1));
+    return this.props.tale.get(1).map((tales, index) => {
       return (
         <button
           onClick={() => this.props.clickButton(index)}
           style={style.button}
           key={index}
-        >{this.props.tale.cells[index]}</button>
+        >{this.props.tale.get(1)[index]}</button>
       );
     });
-  }
-
-  setSymbol(index) {
-    if (this.props.tale.count === 0) {
-      this.props.setX(index);
-    } else {
-      this.props.setO(index);
-    }
-  }
-
-  handleOnClick(index) {
-    if (this.props.tale.cells[index] === 'X' || this.props.tale.cells[index] === 'O') {
-      this.checkForState2(index);
-      // this.props.getState();
-    }
-    else if (this.props.tale.cells[index] === ' ') {
-      if (index > 34) {
-        this.checkForState(index);
-      }
-      if (this.props.tale.cells[index + 7] !== ' ') {
-        this.checkForState(index);
-      }
-    }
-  }
-
-  checkForState(index) {
-    this.setSymbol(index);
-  }
-
-  checkForState2(index) {
-    let id = index;
-    while (this.props.tale.cells[id] === 'X' || this.props.tale.cells[id] === 'O') {
-      if (id > 6) {
-        this.props.cickSymbol(id);
-      } else {
-        this.props.cickSymbol2(id);
-      }
-      id -= 7;
-    }
-    for (let l = 0; l < this.props.talePast.length; l++) {
-      if (this.props.tale.cells === this.props.talePast[l]) {
-        // this.props.tale.cells = this.props.talePast[l].cells;
-        // (geht nicht, da store read-only)
-        // => {this.props.onUndo} ??
-        // Wird messy
-      }
-    }
   }
 
   render() {
