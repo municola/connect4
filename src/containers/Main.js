@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { clickButton } from '../actions/index.js';
+import { clickButton, undo } from '../actions/index.js';
 
 const style = {
   body: {
@@ -23,6 +23,9 @@ const style = {
     width: '60px',
     height: '60px',
   },
+  undo: {
+    margin: 'middle',
+  },
 };
 
 class App extends Component {
@@ -38,14 +41,34 @@ class App extends Component {
     });
   }
 
+  currentTurn() {
+    if (this.props.tale.count === 1) {
+      return <p>Turn: O</p>;
+    } return <p>Turn: X</p>;
+  }
+
+  undoButon() {
+    if (this.props.tale.undoAvailable) {
+      return (
+        <button
+          onClick={() => this.props.undo(this.props.tale.count)}
+          style={style.undo}
+        >Undo</button>
+      );
+    }
+    return false;
+  }
+
   render() {
     return (
       <div style={style.body}>
+        {this.currentTurn()}
         <div style={style.container}>
           <div style={style.buttonField}>
             {this.getButtons()}
           </div>
         </div>
+        {this.undoButon()}
       </div>
     );
   }
@@ -58,11 +81,13 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton }, dispatch);
+  return bindActionCreators({ clickButton, undo }, dispatch);
 }
 
 App.propTypes = {
   tale: React.PropTypes.object.isRequired,
+  undo: React.PropTypes.func.isRequired,
+  clickButton: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);
