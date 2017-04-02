@@ -1,3 +1,117 @@
+const initialState = {
+  cells: [
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+  ],
+  count: 0,
+  past: [],
+};
+
+export default function tales(state = initialState, action) {
+  switch (action.type) {
+    case 'CLICK_BUTTON': {
+      console.log(state);
+      let temp = state;
+      // Set X or O
+      if (temp.cells[action.index] === ' ') {
+        // index 0 - 34
+        if (action.index <= 34 && temp.cells[action.index + 7] !== ' ') {
+          console.log('asdfas');
+          if (temp.count === 0) {
+            // Set X
+            temp = {
+              ...temp,
+              cells: [
+                ...temp.cells.slice(0, action.index),
+                temp.cells[action.index] = 'X',
+                ...temp.cells.slice(action.index + 1),
+              ],
+              count: 1,
+            };
+          } else {
+            // Set O
+            temp = {
+              ...temp,
+              cells: [
+                ...temp.cells.slice(0, action.index),
+                temp.cells[action.index] = 'O',
+                ...temp.cells.slice(action.index + 1),
+              ],
+              count: 0,
+            };
+          }
+        }
+        // index 34 - 42
+        if (action.index > 34) {
+          if (temp.count === 0) {
+            // Set X
+            temp = {
+              ...temp,
+              cells: [
+                ...temp.cells.slice(0, action.index),
+                temp.cells[action.index] = 'X',
+                ...temp.cells.slice(action.index + 1),
+              ],
+              count: 1,
+            };
+          } else {
+            // Set O
+            temp = {
+              ...temp,
+              cells: [
+                ...temp.cells.slice(0, action.index),
+                temp.cells[action.index] = 'O',
+                ...temp.cells.slice(action.index + 1),
+              ],
+              count: 0,
+            };
+          }
+        }
+        // Not valid, Error Message
+      } else {
+        let a = action.index;
+        while (a > 6) {
+          temp = {
+            ...temp,
+            cells: [
+              ...temp.cells.slice(0, a),
+              temp.cells[a] = temp.cells[a - 7],
+              ...temp.cells.slice(a + 1),
+            ],
+          };
+          a -= 7;
+        }
+        temp = {
+          ...temp,
+          cells: [
+            ...temp.cells.slice(0, a),
+            temp.cells[a] = ' ',
+            ...temp.cells.slice(a + 1),
+          ],
+        };
+      }
+      // Validation Check
+      temp = {
+        ...temp,
+        past: temp.past.concat([temp.cells]),
+      };
+      return temp;
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
+
+
+
+
+/*
 import undoable from 'redux-undo';
 
 const initialState = {
@@ -10,88 +124,70 @@ const initialState = {
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
   ],
-  count: 1,
+  count: 0,
+  count2: 0,
 };
-
-function setSymbol(tempStore, action) {
-  console.log(tempStore.count);
-  if (tempStore.count === 0) {
-    tempStore = {
-      ...tempStore,
-      cells: [
-        ...tempStore.cells.slice(0, action.index),
-        tempStore.cells[action.index] = 'X',
-        ...tempStore.cells.slice(action.index + 1),
-      ],
-      count: 1,
-    };
-  } else {
-    tempStore = {
-      ...tempStore,
-      cells: [
-        ...tempStore.cells.slice(0, action.index),
-        tempStore.cells[action.index] = 'O',
-        ...tempStore.cells.slice(action.index + 1),
-      ],
-      count: 0,
-    };
-  }
-}
-
-function kickSymbol(tempStore, action) {
-  let id = action.index;
-  while (tempStore.cells[id] === 'X' || tempStore.cells[id] === 'O') {
-    if (id > 6) {
-      tempStore = {
-        ...tempStore,
-        cells: [
-          ...tempStore.cells.slice(0, id),
-          tempStore.cells[id] = tempStore.cells[id - 7],
-          ...tempStore.cells.slice(id + 1),
-        ],
-      };
-    } else {
-      tempStore = {
-        ...tempStore,
-        cells: [
-          ...tempStore.cells.slice(0, id),
-          tempStore.cells[id] = ' ',
-          ...tempStore.cells.slice(id + 1),
-        ],
-      };
-    }
-    id -= 7;
-  }
-}
 
 const tale = (state = initialState, action) => {
   switch (action.type) {
-    case 'CLICK_BUTTON': {
-      const index = action.index;
-      const tempStore = { ...state };
-
-      console.log(tempStore);
-
-      if (tempStore.cells[index] === 'X' || tempStore.cells[index] === 'O') {
-        kickSymbol(tempStore, action);
-      } else if (tempStore.cells[index] === ' ') {
-        if (index > 34) {
-          setSymbol(tempStore, action);
-        } else if (tempStore.cells[index + 7] !== ' ') {
-          setSymbol(tempStore, action);
-        }
-      }
-      return tempStore;
+    case 'SET_X': {
+      return {
+        ...state,
+        cells: [
+          ...state.cells.slice(0, action.index),
+          state.cells[action.index] = 'X',
+          ...state.cells.slice(action.index + 1),
+        ],
+        count: 1,
+      };
+    }
+    case 'SET_O': {
+      return {
+        ...state,
+        cells: [
+          ...state.cells.slice(0, action.index),
+          state.cells[action.index] = 'O',
+          ...state.cells.slice(action.index + 1),
+        ],
+        count: 0,
+      };
+    }
+    case 'CICK_SYMBOL' : {
+      return {
+        ...state,
+        cells: [
+          ...state.cells.slice(0, action.index),
+          state.cells[action.index] = state.cells[action.index - 7],
+          ...state.cells.slice(action.index + 1),
+        ],
+      };
+    }
+    case 'CICK_SYMBOL2' : {
+      return {
+        ...state,
+        cells: [
+          ...state.cells.slice(0, action.index),
+          state.cells[action.index] = ' ',
+          ...state.cells.slice(action.index + 1),
+        ],
+      };
+    }
+    case 'GET_STATE' : {
+      return state;
+    }
+    case 'UNDO_CICKED_SYMBOL' : {
+      // something else
+      return state;
     }
     default: {
       return state;
     }
   }
 };
-
-const undoableTale = undoable(tale, {});
-
+const undoableTale = undoable(tale, {
+  // filter: excludeAction(['CICK_SYMBOL', 'CICK_SYMBOL2']),
+  initTypes: ['@@redux/INIT', '@@INIT'],
+});
 export default undoableTale;
-
-// hash-map
-// join
+hash-map
+*/
