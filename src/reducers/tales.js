@@ -14,20 +14,18 @@ const initialState = {
 export default function tales(state = initialState, action) {
   switch (action.type) {
     case 'CLICK_BUTTON': {
-      console.log(state);
       let temp = state;
       // Set X or O
       if (temp.cells[action.index] === ' ') {
         // index 0 - 34
         if (action.index <= 34 && temp.cells[action.index + 7] !== ' ') {
-          console.log('asdfas');
           if (temp.count === 0) {
             // Set X
             temp = {
               ...temp,
               cells: [
                 ...temp.cells.slice(0, action.index),
-                temp.cells[action.index] = 'X',
+                'X',
                 ...temp.cells.slice(action.index + 1),
               ],
               count: 1,
@@ -38,7 +36,7 @@ export default function tales(state = initialState, action) {
               ...temp,
               cells: [
                 ...temp.cells.slice(0, action.index),
-                temp.cells[action.index] = 'O',
+                'O',
                 ...temp.cells.slice(action.index + 1),
               ],
               count: 0,
@@ -53,7 +51,7 @@ export default function tales(state = initialState, action) {
               ...temp,
               cells: [
                 ...temp.cells.slice(0, action.index),
-                temp.cells[action.index] = 'X',
+                'X',
                 ...temp.cells.slice(action.index + 1),
               ],
               count: 1,
@@ -64,7 +62,7 @@ export default function tales(state = initialState, action) {
               ...temp,
               cells: [
                 ...temp.cells.slice(0, action.index),
-                temp.cells[action.index] = 'O',
+                'O',
                 ...temp.cells.slice(action.index + 1),
               ],
               count: 0,
@@ -79,7 +77,7 @@ export default function tales(state = initialState, action) {
             ...temp,
             cells: [
               ...temp.cells.slice(0, a),
-              temp.cells[a] = temp.cells[a - 7],
+              temp.cells[a - 7],
               ...temp.cells.slice(a + 1),
             ],
           };
@@ -89,16 +87,31 @@ export default function tales(state = initialState, action) {
           ...temp,
           cells: [
             ...temp.cells.slice(0, a),
-            temp.cells[a] = ' ',
+            ' ',
             ...temp.cells.slice(a + 1),
           ],
         };
       }
       // Validation Check
+      let c = 0;
+      while (c < temp.past.length) {
+        let d = 0;
+        for (let i = 0; i < 42; i++) {
+          if (temp.cells[i] === temp.past[c][i]) {
+            d++;
+          }
+        }
+        if (d === 42) {
+          return state;
+        }
+        c++;
+      }
+
       temp = {
         ...temp,
         past: temp.past.concat([temp.cells]),
       };
+
       return temp;
     }
     default: {
@@ -108,6 +121,20 @@ export default function tales(state = initialState, action) {
 }
 
 
+/*
+[
+  ...temp.cells.slice(0, a),
+  temp.cells[a] = temp.cells[a - 7],
+  ...temp.cells.slice(a + 1),            ],
+
+sollte vermutlich
+
+[...temp.cells.slice(0, a),
+temp.cells[a - 7],
+...temp.cells.slice(a + 1),            ],
+
+sein
+*/
 
 
 
