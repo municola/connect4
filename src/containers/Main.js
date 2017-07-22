@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { clickButton, undo } from '../actions/index.js';
+import io from 'socket.io-client';
+import autobind from 'autobind-decorator';
 
 const style = {
   body: {
-    margin: '-8px',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
   },
@@ -29,6 +30,13 @@ const style = {
 };
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: '',
+    };
+  }
+
   getButtons() {
     return this.props.tale.cells.map((tales, index) => {
       return (
@@ -59,6 +67,14 @@ class App extends Component {
     return false;
   }
 
+  @autobind
+  connect() {
+    const socket = io('http://localhost:5609');
+    socket.emit('message', {});
+    socket.on('answer', (message) => this.setState({ message }));
+  }
+
+
   render() {
     return (
       <div style={style.body}>
@@ -69,6 +85,8 @@ class App extends Component {
           </div>
         </div>
         {this.undoButon()}
+        <button onClick={this.connect}>click me </button>
+        <p>{this.state.message}</p>
       </div>
     );
   }
