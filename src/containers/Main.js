@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { clickButton, undo } from '../actions/index.js';
 import io from 'socket.io-client';
-import autobind from 'autobind-decorator';
+import { autobind } from 'core-decorators';
+import { clickButton, undo } from '../actions/index.js';
 
 const style = {
   body: {
