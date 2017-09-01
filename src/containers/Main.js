@@ -69,7 +69,8 @@ class App extends Component {
 
   @autobind
   connect() {
-    const socket = io('http://localhost:5609');
+    const socket = io('http://localhost:4003');
+
     socket.emit('message', {});
     socket.on('answer', (message) => this.setState({ message }));
   }
@@ -85,8 +86,8 @@ class App extends Component {
           </div>
         </div>
         {this.undoButon()}
-        <button onClick={this.connect}>click me </button>
         <p>{this.state.message}</p>
+        <button onClick={this.connect}>click</button>
       </div>
     );
   }
