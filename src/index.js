@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import App from './Pages/App';
 import reducer from './reducers';
-import Main from './containers/Main';
+import Lobby from './containers/Lobby';
 
 const store = createStore(
   reducer,
@@ -23,7 +23,7 @@ render(
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path="/" component={App}>
-        <IndexRoute component={Main} />
+        <IndexRoute component={Lobby} />
       </Route>
     </Router>
   </Provider>,

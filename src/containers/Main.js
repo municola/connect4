@@ -67,15 +67,6 @@ class App extends Component {
     return false;
   }
 
-  @autobind
-  connect() {
-    const socket = io('http://localhost:4003');
-
-    socket.emit('message', {});
-    socket.on('answer', (message) => this.setState({ message }));
-  }
-
-
   render() {
     return (
       <div style={style.body}>

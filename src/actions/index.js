@@ -17,3 +17,23 @@ export const undo = (turn) => {
     turn: 1,
   };
 };
+
+export const setUsername = (username) => {
+  return {
+    type: 'SET_USERNAME',
+    username,
+  };
+};
+
+export const joinTrue = () => {
+  return {
+    type: 'JOIN_TRUE',
+  };
+};
+
+export const initSocket = (socket) => {
+  return {
+    type: 'INIT_SOCKET',
+    socket,
+  };
+};

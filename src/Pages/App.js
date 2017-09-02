@@ -1,9 +1,9 @@
 import React from 'react';
-import Main from '../containers/Main.js';
+import Lobby from '../containers/Lobby.js';
 
 const App = () => (
   <div>
-    <Main />
+    <Lobby />
   </div>
 );
 
