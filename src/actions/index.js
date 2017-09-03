@@ -1,12 +1,7 @@
-export const clickButton = (index, turn) => {
-  if (turn === true) {
-    return {
-      type: 'CLICK_BUTTON',
-      index,
-    };
-  }
+export const clickButton = (index) => {
   return {
-    type: 'NOT_CLICK_BUTTON',
+    type: 'CLICK_BUTTON',
+    index,
   };
 };
 
@@ -43,10 +38,31 @@ export const initSocket = (socket) => {
   };
 };
 
-export const ready = (socket, id) => {
+export const finishTurn = (socket, id) => {
   socket.emit('turn', id);
   return {
+    type: 'FINISH_TURN',
+    id,
+  };
+};
+
+export const ready = (socket) => {
+  // socket.emit('ready');
+  return {
     type: 'READY',
+  };
+};
+
+export const myTurn = () => {
+  return {
+    type: 'MY_TURN',
+  };
+};
+
+export const enemyTurn = (id) => {
+  return {
+    type: 'ENEMY_TURN',
+    id,
   };
 };
 

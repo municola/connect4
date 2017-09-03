@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
 import Main from './Main.js';
-import { setUsername, joinTrue, initSocket } from '../actions/index.js';
+import { setUsername, joinTrue } from '../actions/index.js';
 
 const style = {
   body: {
@@ -20,11 +19,6 @@ class Lobby extends Component {
     this.state = {
       input: '',
     };
-  }
-
-  @autobind
-  componentDidMount() {
-    this.props.initSocket(io('http://localhost:4003'));
   }
 
   @autobind
@@ -60,14 +54,13 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ setUsername, joinTrue, initSocket }, dispatch);
+  return bindActionCreators({ setUsername, joinTrue }, dispatch);
 }
 
 Lobby.propTypes = {
   lobby: React.PropTypes.object.isRequired,
   setUsername: React.PropTypes.func.isRequired,
   joinTrue: React.PropTypes.func.isRequired,
-  initSocket: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

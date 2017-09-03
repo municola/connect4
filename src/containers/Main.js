@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
-import { autobind } from 'core-decorators';
-import { clickButton, undo, ready } from '../actions/index.js';
+import { clickButton, undo, finishTurn, ready, myTurn, enemyTurn } from '../actions/index.js';
 
 const style = {
   body: {
@@ -30,16 +28,32 @@ const style = {
 };
 
 class App extends Component {
+  componentDidMount() {
+    this.props.lobby.socket.emit('ready');
+    this.props.lobby.socket.on('start', () => {
+      this.props.myTurn();
+    });
+    this.props.lobby.socket.on('turn', (id) => this.props.enemyTurn(id));
+  }
+
   getButtons() {
     return this.props.tale.cells.map((tales, index) => {
       return (
         <button
-          onClick={() => this.props.clickButton(index, this.props.tale.turn)}
+          onClick={() => this.handleButtonClick(index)}
           style={style.button}
           key={index}
         >{this.props.tale.cells[index]}</button>
       );
     });
+  }
+
+  handleButtonClick(index) {
+    if (this.props.tale.myTurn === true) {
+      this.props.clickButton(index, this.props.tale.turn);
+    } else {
+      console.log('not your turn');
+    }
   }
 
   currentTurn() {
@@ -71,7 +85,7 @@ class App extends Component {
         </div>
         {this.undoButon()}
         <button
-          onClick={this.props.ready(this.props.tale.count, this.props.tale.myTurn)}
+          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.tale.mySymbol)}
         >
           finish turn
         </button>
@@ -83,17 +97,20 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     tale: state.tales,
+    lobby: state.lobby,
   };
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton, undo, ready }, dispatch);
+  return bindActionCreators({ clickButton, undo, finishTurn, ready, myTurn, enemyTurn }, dispatch);
 }
 
 App.propTypes = {
   tale: React.PropTypes.object.isRequired,
+  lobby: React.PropTypes.object.isRequired,
   undo: React.PropTypes.func.isRequired,
   clickButton: React.PropTypes.func.isRequired,
+  finishTurn: React.PropTypes.func.isRequired,
   ready: React.PropTypes.func.isRequired,
 };
 

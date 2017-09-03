@@ -1,6 +1,10 @@
 const initialState = {
-  myTurn: '',
+  myTurn: false,
+  mySymbol: '',
+  finishTurn: false,
   ready: false,
+  undoAvailable: false,
+
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -9,7 +13,6 @@ const initialState = {
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
   ],
-  count: 0,
   past: [
     [
       ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -30,55 +33,27 @@ export default function tales(state = initialState, action) {
       if (temp.cells[action.index] === ' ') {
         // index 0 - 34
         if (action.index <= 34 && temp.cells[action.index + 7] !== ' ') {
-          if (temp.count === 0) {
-            // Set X
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, action.index),
-                'X',
-                ...temp.cells.slice(action.index + 1),
-              ],
-              count: 1,
-            };
-          } else {
-            // Set O
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, action.index),
-                'O',
-                ...temp.cells.slice(action.index + 1),
-              ],
-              count: 0,
-            };
-          }
+          // Set X
+          temp = {
+            ...temp,
+            cells: [
+              ...temp.cells.slice(0, action.index),
+              'X',
+              ...temp.cells.slice(action.index + 1),
+            ],
+          };
         }
         // index 34 - 42
         if (action.index > 34) {
-          if (temp.count === 0) {
-            // Set X
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, action.index),
-                'X',
-                ...temp.cells.slice(action.index + 1),
-              ],
-              count: 1,
-            };
-          } else {
-            // Set O
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, action.index),
-                'O',
-                ...temp.cells.slice(action.index + 1),
-              ],
-              count: 0,
-            };
-          }
+          // Set X
+          temp = {
+            ...temp,
+            cells: [
+              ...temp.cells.slice(0, action.index),
+              'X',
+              ...temp.cells.slice(action.index + 1),
+            ],
+          };
         }
         // Cick a Symbol
       } else {
@@ -102,29 +77,6 @@ export default function tales(state = initialState, action) {
               ' ',
               ...temp.cells.slice(a + 1),
             ],
-            count: 1,
-          };
-        } else {
-          let a = action.index;
-          while (a > 6) {
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, a),
-                temp.cells[a - 7],
-                ...temp.cells.slice(a + 1),
-              ],
-            };
-            a -= 7;
-          }
-          temp = {
-            ...temp,
-            cells: [
-              ...temp.cells.slice(0, a),
-              ' ',
-              ...temp.cells.slice(a + 1),
-            ],
-            count: 0,
           };
         }
       }
@@ -147,8 +99,8 @@ export default function tales(state = initialState, action) {
         ...temp,
         past: temp.past.concat([temp.cells]),
         undoAvailable: true,
-        ready: true,
-        myTurn: action.index,
+        myTurn: false,
+        mySymbol: action.index,
       };
 
       return temp;
@@ -167,14 +119,40 @@ export default function tales(state = initialState, action) {
         ],
         undoAvailable: false,
         ready: false,
-        myTurn: '',
+        myTurn: true,
+      };
+    }
+    case 'ENEMY_TURN' : {
+      return {
+        ...state,
+        cells: [
+          ...state.cells.slice(0, action.id),
+          state.cells[action.id] = 'O',
+          ...state.cells.slice(action.id + 1),
+        ],
+        myTurn: true,
+        undoAvailable: true,
       };
     }
     case 'READY' : {
       return {
         ...state,
-        myTurn: '',
-        ready: false,
+        ready: true,
+      };
+    }
+    case 'MY_TURN' : {
+      return {
+        ...state,
+        myTurn: true,
+      };
+    }
+    case 'FINISH_TURN' : {
+      return {
+        ...state,
+        finishTurn: true,
+        myTurn: false,
+        mySymbol: action.id,
+        undoAvailable: false,
       };
     }
     default: {
