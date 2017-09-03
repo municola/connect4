@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import { autobind } from 'core-decorators';
-import { clickButton, undo } from '../actions/index.js';
+import { clickButton, undo, ready } from '../actions/index.js';
 
 const style = {
   body: {
@@ -30,18 +30,11 @@ const style = {
 };
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      message: '',
-    };
-  }
-
   getButtons() {
     return this.props.tale.cells.map((tales, index) => {
       return (
         <button
-          onClick={() => this.props.clickButton(index)}
+          onClick={() => this.props.clickButton(index, this.props.tale.turn)}
           style={style.button}
           key={index}
         >{this.props.tale.cells[index]}</button>
@@ -77,8 +70,11 @@ class App extends Component {
           </div>
         </div>
         {this.undoButon()}
-        <p>{this.state.message}</p>
-        <button onClick={this.connect}>click</button>
+        <button
+          onClick={this.props.ready(this.props.tale.count, this.props.tale.myTurn)}
+        >
+          finish turn
+        </button>
       </div>
     );
   }
@@ -91,13 +87,14 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton, undo }, dispatch);
+  return bindActionCreators({ clickButton, undo, ready }, dispatch);
 }
 
 App.propTypes = {
   tale: React.PropTypes.object.isRequired,
   undo: React.PropTypes.func.isRequired,
   clickButton: React.PropTypes.func.isRequired,
+  ready: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);

@@ -1,7 +1,12 @@
-export const clickButton = (index) => {
+export const clickButton = (index, turn) => {
+  if (turn === true) {
+    return {
+      type: 'CLICK_BUTTON',
+      index,
+    };
+  }
   return {
-    type: 'CLICK_BUTTON',
-    index,
+    type: 'NOT_CLICK_BUTTON',
   };
 };
 
@@ -37,3 +42,11 @@ export const initSocket = (socket) => {
     socket,
   };
 };
+
+export const ready = (socket, id) => {
+  socket.emit('turn', id);
+  return {
+    type: 'READY',
+  };
+};
+

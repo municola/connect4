@@ -1,4 +1,6 @@
 const initialState = {
+  myTurn: '',
+  ready: false,
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -145,9 +147,14 @@ export default function tales(state = initialState, action) {
         ...temp,
         past: temp.past.concat([temp.cells]),
         undoAvailable: true,
+        ready: true,
+        myTurn: action.index,
       };
 
       return temp;
+    }
+    case 'NOT_CLICK_BUTTON' : {
+      return state;
     }
     case 'UNDO': {
       return {
@@ -159,6 +166,15 @@ export default function tales(state = initialState, action) {
           ...state.past.slice(0, state.past.length - 1),
         ],
         undoAvailable: false,
+        ready: false,
+        myTurn: '',
+      };
+    }
+    case 'READY' : {
+      return {
+        ...state,
+        myTurn: '',
+        ready: false,
       };
     }
     default: {

@@ -9,8 +9,14 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
+const players = [];
+
 io.on('connection', (socket) => {
-  socket.on('message', () => {
-    socket.emit('answer', 'hello');
+  players.push(socket.id);
+  if (players.length === 2) {
+    io.to(players[0]).emit('start');
+  }
+  socket.on('turn', (id) => {
+    socket.emit('turn', id);
   });
 });
