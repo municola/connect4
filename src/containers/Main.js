@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { clickButton, undo, finishTurn, ready, myTurn, enemyTurn } from '../actions/index.js';
+import { clickButton, undo, finishTurn, ready, myTurn, enemyTurn, symbol } from '../actions/index.js';
 
 const style = {
   body: {
@@ -33,7 +33,8 @@ class App extends Component {
     this.props.lobby.socket.on('start', () => {
       this.props.myTurn();
     });
-    this.props.lobby.socket.on('turn', (id) => this.props.enemyTurn(id));
+    this.props.lobby.socket.on('symbol', (symbol) => this.props.symbol(symbol));
+    this.props.lobby.socket.on('turn', (table) => this.props.enemyTurn(table));
   }
 
   getButtons() {
@@ -50,16 +51,10 @@ class App extends Component {
 
   handleButtonClick(index) {
     if (this.props.tale.myTurn === true) {
-      this.props.clickButton(index, this.props.tale.turn);
+      this.props.clickButton(index, this.props.tale.mySymbol);
     } else {
-      console.log('not your turn');
+      console.log('not your turn/client');
     }
-  }
-
-  currentTurn() {
-    if (this.props.tale.count === 1) {
-      return <p>Turn: O</p>;
-    } return <p>Turn: X</p>;
   }
 
   undoButon() {
@@ -74,21 +69,27 @@ class App extends Component {
     return false;
   }
 
+  finishTurnButton() {
+    if (this.props.tale.undoAvailable) {
+      return (
+        <button
+          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.tale.cells)}
+        >finish turn</button>
+      );
+    }
+    return false;
+  }
+
   render() {
     return (
       <div style={style.body}>
-        {this.currentTurn()}
         <div style={style.container}>
           <div style={style.buttonField}>
             {this.getButtons()}
           </div>
         </div>
         {this.undoButon()}
-        <button
-          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.tale.mySymbol)}
-        >
-          finish turn
-        </button>
+        {this.finishTurnButton()}
       </div>
     );
   }
@@ -102,7 +103,7 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton, undo, finishTurn, ready, myTurn, enemyTurn }, dispatch);
+  return bindActionCreators({ clickButton, undo, finishTurn, ready, myTurn, enemyTurn, symbol }, dispatch);
 }
 
 App.propTypes = {
@@ -112,6 +113,9 @@ App.propTypes = {
   clickButton: React.PropTypes.func.isRequired,
   finishTurn: React.PropTypes.func.isRequired,
   ready: React.PropTypes.func.isRequired,
+  myTurn: React.PropTypes.func.isRequired,
+  enemyTurn: React.PropTypes.func.isRequired,
+  symbol: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);

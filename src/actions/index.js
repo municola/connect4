@@ -1,7 +1,8 @@
-export const clickButton = (index) => {
+export const clickButton = (index, symbol) => {
   return {
     type: 'CLICK_BUTTON',
     index,
+    symbol,
   };
 };
 
@@ -38,16 +39,15 @@ export const initSocket = (socket) => {
   };
 };
 
-export const finishTurn = (socket, id) => {
-  socket.emit('turn', id);
+export const finishTurn = (socket, table) => {
+  socket.emit('turn', table);
   return {
     type: 'FINISH_TURN',
-    id,
+    table,
   };
 };
 
 export const ready = (socket) => {
-  // socket.emit('ready');
   return {
     type: 'READY',
   };
@@ -59,10 +59,17 @@ export const myTurn = () => {
   };
 };
 
-export const enemyTurn = (id) => {
+export const enemyTurn = (table) => {
   return {
     type: 'ENEMY_TURN',
-    id,
+    table,
+  };
+};
+
+export const symbol = (symbol) => {
+  return {
+    type: 'SYMBOL',
+    symbol,
   };
 };
 

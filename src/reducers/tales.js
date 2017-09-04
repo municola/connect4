@@ -38,7 +38,7 @@ export default function tales(state = initialState, action) {
             ...temp,
             cells: [
               ...temp.cells.slice(0, action.index),
-              'X',
+              action.symbol,
               ...temp.cells.slice(action.index + 1),
             ],
           };
@@ -50,35 +50,33 @@ export default function tales(state = initialState, action) {
             ...temp,
             cells: [
               ...temp.cells.slice(0, action.index),
-              'X',
+              action.symbol,
               ...temp.cells.slice(action.index + 1),
             ],
           };
         }
         // Cick a Symbol
       } else {
-        if (temp.count === 0) {
-          let a = action.index;
-          while (a > 6) {
-            temp = {
-              ...temp,
-              cells: [
-                ...temp.cells.slice(0, a),
-                temp.cells[a - 7],
-                ...temp.cells.slice(a + 1),
-              ],
-            };
-            a -= 7;
-          }
+        let a = action.index;
+        while (a > 6) {
           temp = {
             ...temp,
             cells: [
               ...temp.cells.slice(0, a),
-              ' ',
+              temp.cells[a - 7],
               ...temp.cells.slice(a + 1),
             ],
           };
+          a -= 7;
         }
+        temp = {
+          ...temp,
+          cells: [
+            ...temp.cells.slice(0, a),
+            ' ',
+            ...temp.cells.slice(a + 1),
+          ],
+        };
       }
       // Validation Check
       let c = 0;
@@ -100,13 +98,9 @@ export default function tales(state = initialState, action) {
         past: temp.past.concat([temp.cells]),
         undoAvailable: true,
         myTurn: false,
-        mySymbol: action.index,
       };
 
       return temp;
-    }
-    case 'NOT_CLICK_BUTTON' : {
-      return state;
     }
     case 'UNDO': {
       return {
@@ -125,13 +119,9 @@ export default function tales(state = initialState, action) {
     case 'ENEMY_TURN' : {
       return {
         ...state,
-        cells: [
-          ...state.cells.slice(0, action.id),
-          state.cells[action.id] = 'O',
-          ...state.cells.slice(action.id + 1),
-        ],
+        cells: action.table,
+        past: state.past.concat([action.table]),
         myTurn: true,
-        undoAvailable: true,
       };
     }
     case 'READY' : {
@@ -140,10 +130,17 @@ export default function tales(state = initialState, action) {
         ready: true,
       };
     }
+    case 'SYMBOL' : {
+      return {
+        ...state,
+        mySymbol: action.symbol,
+      };
+    }
     case 'MY_TURN' : {
       return {
         ...state,
         myTurn: true,
+        past: state.past.concat([state.cells]),
       };
     }
     case 'FINISH_TURN' : {
@@ -151,7 +148,6 @@ export default function tales(state = initialState, action) {
         ...state,
         finishTurn: true,
         myTurn: false,
-        mySymbol: action.id,
         undoAvailable: false,
       };
     }
