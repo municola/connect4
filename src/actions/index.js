@@ -39,8 +39,8 @@ export const initSocket = (socket) => {
   };
 };
 
-export const finishTurn = (socket, table) => {
-  socket.emit('turn', table);
+export const finishTurn = (socket, gameId, table) => {
+  socket.emit('turn', gameId, table);
   return {
     type: 'FINISH_TURN',
     table,
@@ -73,3 +73,17 @@ export const symbol = (symbol) => {
   };
 };
 
+export const room = (i) => {
+  return {
+    type: 'ROOM',
+    i,
+  };
+};
+
+export const peopleUpdate = (id, people) => {
+  return {
+    type: 'PEOPLE_UPDATE',
+    id,
+    people,
+  };
+};

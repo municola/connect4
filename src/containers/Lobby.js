@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
 import Main from './Main.js';
-import { setUsername, joinTrue } from '../actions/index.js';
+import { setUsername, joinTrue, room, peopleUpdate } from '../actions/index.js';
 
 const style = {
   body: {
@@ -21,16 +21,41 @@ class Lobby extends Component {
     };
   }
 
-  @autobind
+  componentWillMount() {
+  }
+
   join() {
-    this.props.lobby.socket.emit('join', this.props.lobby.username);
     this.props.joinTrue();
+  }
+
+  @autobind
+  fetch() {
+    this.props.lobby.socket.on('update', (id, people) => {
+      this.props.peopleUpdate(id, people);
+    });
+  }
+
+  @autobind
+  connect(i) {
+    this.props.lobby.socket.emit('subscribe', i);
+    this.props.room(i);
   }
 
   render() {
     if (this.props.lobby.join === true) {
+      if (this.props.lobby.subscribed === true) {
+        return <Main />;
+      }
       return (
-        <Main />
+        <div style={style.chatRooms}>
+          {this.fetch()}
+          <button style={style.roomButton} onClick={() => this.connect(0)}>Room 1</button>
+          <p>{this.props.lobby.people[0]}</p>
+          <button style={style.roomButton} onClick={() => this.connect(1)}>Room 2</button>
+          <p>{this.props.lobby.people[1]}</p>
+          <button style={style.roomButton} onClick={() => this.connect(2)}>Room 3</button>
+          <p>{this.props.lobby.people[2]}</p>
+        </div>
       );
     }
     return (
@@ -54,13 +79,15 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ setUsername, joinTrue }, dispatch);
+  return bindActionCreators({ setUsername, joinTrue, room, peopleUpdate }, dispatch);
 }
 
 Lobby.propTypes = {
   lobby: React.PropTypes.object.isRequired,
   setUsername: React.PropTypes.func.isRequired,
   joinTrue: React.PropTypes.func.isRequired,
+  room: React.PropTypes.func.isRequired,
+  peopleUpdate: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

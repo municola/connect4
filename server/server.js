@@ -7,30 +7,43 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
-let players = [];
-let readycount = 0;
+let games = [[], [], []];
+const readycount = [];
 
 io.on('connection', (socket) => {
-  players.push(socket.id);
-  console.log(players.length, players);
-  socket.on('ready', () => {
-    readycount++;
-    console.log('ready');
-    if (readycount === 2) {
-      console.log('sent start request');
-      io.to(players[0]).emit('start');
-      io.to(players[0]).emit('symbol', 'X');
-      io.to(players[1]).emit('symbol', 'O');
+
+  socket.on('subscribe', (gameId) => {
+    if (games[gameId].length < 2) {
+      socket.join(gameId);
+      games[gameId].push(socket.id);
+      socket.emit('update', gameId, games[gameId].length);
+      socket.broadcast.emit('update', gameId, games[gameId].length);
     }
   });
-  socket.on('turn', (id) => {
-    socket.broadcast.emit('turn', (id));
+
+  socket.on('ready', (gameId) => {
+    readycount[gameId] = readycount[gameId] + 1;
+    if (readycount[gameId] === 2) {
+      console.log('sent start request');
+      io.to(games[gameId][0]).emit('start');
+      io.to(games[gameId][0]).emit('symbol', 'X');
+      io.to(games[gameId][1]).emit('symbol', 'O');
+    }
   });
+
+  socket.on('turn', (gameId, table) => {
+    socket.to(gameId).emit('turn', table);
+  });
+
   socket.on('disconnect', () => {
-    players = players.filter((item) => {
-      return item !== socket.id;
+    games = games.filter((item) => {
+      return item.filter((item2) => {
+        return item2 !== socket.id;
+      });
     });
-    readycount--;
-    console.log(players.length, players);
+    readycount[socket.room] = readycount[socket.room] - 1;
+    socket.leave(socket.room);
+    socket.emit('update', socket.room, games[socket.room].length);
+    socket.broadcast.emit('update', socket.room, games[socket.room].length);
   });
 });

@@ -29,7 +29,7 @@ const style = {
 
 class App extends Component {
   componentDidMount() {
-    this.props.lobby.socket.emit('ready');
+    this.props.lobby.socket.emit('ready', (this.props.lobby.room));
     this.props.lobby.socket.on('start', () => {
       this.props.myTurn();
     });
@@ -73,7 +73,7 @@ class App extends Component {
     if (this.props.tale.undoAvailable) {
       return (
         <button
-          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.tale.cells)}
+          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.lobby.room, this.props.tale.cells)}
         >finish turn</button>
       );
     }

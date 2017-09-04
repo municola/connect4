@@ -2,6 +2,9 @@ const initialState = {
   username: '',
   join: false,
   socket: '',
+  room: '',
+  people: [0, 0, 0],
+  subscribed: false,
 };
 
 export default function lobby(state = initialState, action) {
@@ -14,6 +17,19 @@ export default function lobby(state = initialState, action) {
     }
     case 'INIT_SOCKET' : {
       return { ...state, socket: action.socket };
+    }
+    case 'ROOM' : {
+      return { ...state, room: action.i, subscribed: true };
+    }
+    case 'PEOPLE_UPDATE' : {
+      return {
+        ...state,
+        people: [
+          ...state.people.slice(0, action.id),
+          action.people,
+          ...state.people.slice(action.id + 1),
+        ],
+      };
     }
     default: {
       return state;
