@@ -24,11 +24,7 @@ export default function lobby(state = initialState, action) {
     case 'PEOPLE_UPDATE' : {
       return {
         ...state,
-        people: [
-          ...state.people.slice(0, action.id),
-          action.people,
-          ...state.people.slice(action.id + 1),
-        ],
+        people: action.people,
       };
     }
     default: {

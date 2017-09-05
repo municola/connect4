@@ -80,10 +80,9 @@ export const room = (i) => {
   };
 };
 
-export const peopleUpdate = (id, people) => {
+export const peopleUpdate = (people) => {
   return {
     type: 'PEOPLE_UPDATE',
-    id,
     people,
   };
 };

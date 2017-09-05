@@ -84,6 +84,7 @@ class App extends Component {
     return (
       <div style={style.body}>
         <div style={style.container}>
+          {this.props.tale.announcement}
           <div style={style.buttonField}>
             {this.getButtons()}
           </div>

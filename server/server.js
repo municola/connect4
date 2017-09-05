@@ -8,11 +8,19 @@ const io = require('socket.io')(4003, {
 });
 
 let games = [[], [], []];
-const readycount = [];
+const readycount = [0, 0, 0];
 
 io.on('connection', (socket) => {
 
+  console.log(socket.id, 'connected');
+
+  socket.on('updateRequest', () => {
+    socket.emit('update', readycount);
+  });
+
   socket.on('subscribe', (gameId) => {
+    console.log('games: ', games);
+    console.log('readycount: ', readycount);
     if (games[gameId].length < 2) {
       socket.join(gameId);
       games[gameId].push(socket.id);
@@ -23,6 +31,8 @@ io.on('connection', (socket) => {
 
   socket.on('ready', (gameId) => {
     readycount[gameId] = readycount[gameId] + 1;
+    console.log('games: ', games);
+    console.log('readycount: ', readycount);
     if (readycount[gameId] === 2) {
       console.log('sent start request');
       io.to(games[gameId][0]).emit('start');
@@ -36,6 +46,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    console.log('disconnected, games: ', games);
+    console.log('disconnected, readycount: ', readycount);
     games = games.filter((item) => {
       return item.filter((item2) => {
         return item2 !== socket.id;
@@ -43,7 +55,7 @@ io.on('connection', (socket) => {
     });
     readycount[socket.room] = readycount[socket.room] - 1;
     socket.leave(socket.room);
-    socket.emit('update', socket.room, games[socket.room].length);
-    socket.broadcast.emit('update', socket.room, games[socket.room].length);
+    console.log('disconnected after, games: ', games);
+    console.log('disconnected after, readycount: ', readycount);
   });
 });

@@ -4,6 +4,7 @@ const initialState = {
   finishTurn: false,
   ready: false,
   undoAvailable: false,
+  announcement: 'not started yet',
 
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -122,6 +123,7 @@ export default function tales(state = initialState, action) {
         cells: action.table,
         past: state.past.concat([action.table]),
         myTurn: true,
+        announcement: 'Your turn',
       };
     }
     case 'READY' : {
@@ -141,6 +143,7 @@ export default function tales(state = initialState, action) {
         ...state,
         myTurn: true,
         past: state.past.concat([state.cells]),
+        announcement: 'Your turn',
       };
     }
     case 'FINISH_TURN' : {
@@ -149,6 +152,7 @@ export default function tales(state = initialState, action) {
         finishTurn: true,
         myTurn: false,
         undoAvailable: false,
+        announcement: 'Enemy turn',
       };
     }
     default: {

@@ -21,17 +21,12 @@ class Lobby extends Component {
     };
   }
 
-  componentWillMount() {
-  }
-
+  @autobind
   join() {
     this.props.joinTrue();
-  }
-
-  @autobind
-  fetch() {
-    this.props.lobby.socket.on('update', (id, people) => {
-      this.props.peopleUpdate(id, people);
+    this.props.lobby.socket.emit('update');
+    this.props.lobby.socket.on('update', (people) => {
+      this.props.peopleUpdate(people);
     });
   }
 
@@ -48,7 +43,6 @@ class Lobby extends Component {
       }
       return (
         <div style={style.chatRooms}>
-          {this.fetch()}
           <button style={style.roomButton} onClick={() => this.connect(0)}>Room 1</button>
           <p>{this.props.lobby.people[0]}</p>
           <button style={style.roomButton} onClick={() => this.connect(1)}>Room 2</button>
