@@ -52,11 +52,11 @@ io.on('connection', (socket) => {
     console.log(socket.id, 'disconnect');
     console.log('before', howMany);
     console.log('socket.id; ', socket.id);
-    howMany = howMany.filter((item) => {
-      return item.filter((item2) => {
-        return item2 !== socket.id;
+    for (let i = 0; i < howMany.length; i++) {
+      howMany[i] = howMany[i].filter((item) => {
+        return item !== socket.id;
       });
-    });
+    }
     console.log('after', howMany);
     socket.broadcast.emit('update', howManyPeople(howMany));
   });
