@@ -1,10 +1,16 @@
 const initialState = {
+  socket: '',
+  connected: false,
+  subscribed: false,
+  start: false,
   myTurn: false,
   mySymbol: '',
+  howMany: [],
+  message: 'Wait for the other Player',
+
   finishTurn: false,
-  ready: false,
   undoAvailable: false,
-  announcement: 'not started yet',
+  username: '',
 
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -123,28 +129,14 @@ export default function tales(state = initialState, action) {
         cells: action.table,
         past: state.past.concat([action.table]),
         myTurn: true,
-        announcement: 'Your turn',
-      };
-    }
-    case 'READY' : {
-      return {
-        ...state,
-        ready: true,
+        message: 'Your Turn',
       };
     }
     case 'SYMBOL' : {
-      return {
-        ...state,
-        mySymbol: action.symbol,
-      };
+      return { ...state, mySymbol: action.sym, message: action.message };
     }
-    case 'MY_TURN' : {
-      return {
-        ...state,
-        myTurn: true,
-        past: state.past.concat([state.cells]),
-        announcement: 'Your turn',
-      };
+    case 'FIRST_TURN' : {
+      return { ...state, myTurn: true };
     }
     case 'FINISH_TURN' : {
       return {
@@ -152,8 +144,17 @@ export default function tales(state = initialState, action) {
         finishTurn: true,
         myTurn: false,
         undoAvailable: false,
-        announcement: 'Enemy turn',
+        message: 'Enemy Turn',
       };
+    }
+    case 'CONFIRMED' : {
+      return { ...state, subscribed: true };
+    }
+    case 'CONNECTED' : {
+      return { ...state, connected: true };
+    }
+    case 'UPDATE' : {
+      return { ...state, howMany: action.howMany };
     }
     default: {
       return state;

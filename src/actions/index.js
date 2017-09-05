@@ -26,12 +26,6 @@ export const setUsername = (username) => {
   };
 };
 
-export const joinTrue = () => {
-  return {
-    type: 'JOIN_TRUE',
-  };
-};
-
 export const initSocket = (socket) => {
   return {
     type: 'INIT_SOCKET',
@@ -39,23 +33,17 @@ export const initSocket = (socket) => {
   };
 };
 
-export const finishTurn = (socket, gameId, table) => {
-  socket.emit('turn', gameId, table);
+export const finishTurn = (socket, table) => {
+  socket.emit('turn', table);
   return {
     type: 'FINISH_TURN',
     table,
   };
 };
 
-export const ready = (socket) => {
+export const firstTurn = () => {
   return {
-    type: 'READY',
-  };
-};
-
-export const myTurn = () => {
-  return {
-    type: 'MY_TURN',
+    type: 'FIRST_TURN',
   };
 };
 
@@ -66,23 +54,30 @@ export const enemyTurn = (table) => {
   };
 };
 
-export const symbol = (symbol) => {
+export const symbol = (sym, message) => {
   return {
     type: 'SYMBOL',
-    symbol,
+    sym,
+    message,
   };
 };
 
-export const room = (i) => {
+export const confirmed = () => {
   return {
-    type: 'ROOM',
-    i,
+    type: 'CONFIRMED',
   };
 };
 
-export const peopleUpdate = (people) => {
+export const connected = () => {
+  console.log('action');
   return {
-    type: 'PEOPLE_UPDATE',
-    people,
+    type: 'CONNECTED',
+  };
+};
+
+export const update = (howMany) => {
+  return {
+    type: 'UPDATE',
+    howMany,
   };
 };

@@ -7,55 +7,47 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
-let games = [[], [], []];
-const readycount = [0, 0, 0];
+const howMany = [0, 0, 0];
 
 io.on('connection', (socket) => {
-
   console.log(socket.id, 'connected');
-
-  socket.on('updateRequest', () => {
-    socket.emit('update', readycount);
+  socket.on('connectMe', () => {
+    console.log('func: connect');
+    socket.emit('connected');
+    socket.emit('update', howMany);
   });
-
-  socket.on('subscribe', (gameId) => {
-    console.log('games: ', games);
-    console.log('readycount: ', readycount);
-    if (games[gameId].length < 2) {
-      socket.join(gameId);
-      games[gameId].push(socket.id);
-      socket.emit('update', gameId, games[gameId].length);
-      socket.broadcast.emit('update', gameId, games[gameId].length);
+  socket.on('subscribe', (roomId) => {
+    console.log('readycount: ', howMany);
+    if (howMany[roomId] === 1) {
+      console.log('howMany === 1', howMany[roomId]);
+      socket.join(roomId);
+      howMany[roomId] = 2;
+      socket.emit('confirmed');
+      socket.emit('ready', 'X', 'Your Turn');
+      socket.to(roomId).emit('ready', 'O', 'Enemy Turn');
+      socket.emit('firstTurn');
+      socket.emit('update', howMany);
+      socket.broadcast.emit('update', howMany);
+    }
+    if (howMany[roomId] === 0) {
+      console.log('howMany === 0', howMany[roomId]);
+      socket.join(roomId);
+      howMany[roomId] = 1;
+      socket.emit('update', howMany);
+      socket.emit('confirmed');
+      socket.broadcast.emit('update', howMany);
     }
   });
-
-  socket.on('ready', (gameId) => {
-    readycount[gameId] = readycount[gameId] + 1;
-    console.log('games: ', games);
-    console.log('readycount: ', readycount);
-    if (readycount[gameId] === 2) {
-      console.log('sent start request');
-      io.to(games[gameId][0]).emit('start');
-      io.to(games[gameId][0]).emit('symbol', 'X');
-      io.to(games[gameId][1]).emit('symbol', 'O');
-    }
+  socket.on('turn', (table) => {
+    socket.to(socket.rooms[Object.keys(socket.rooms)[0]]).emit('turn', table);
   });
-
-  socket.on('turn', (gameId, table) => {
-    socket.to(gameId).emit('turn', table);
-  });
-
   socket.on('disconnect', () => {
-    console.log('disconnected, games: ', games);
-    console.log('disconnected, readycount: ', readycount);
-    games = games.filter((item) => {
-      return item.filter((item2) => {
-        return item2 !== socket.id;
-      });
-    });
-    readycount[socket.room] = readycount[socket.room] - 1;
-    socket.leave(socket.room);
-    console.log('disconnected after, games: ', games);
-    console.log('disconnected after, readycount: ', readycount);
+    console.log(socket.id, 'disconnect');
+    const roomId = socket.rooms[Object.keys(socket.rooms)[0]];
+    console.log('roomId: ', roomId);
+    howMany[roomId] = howMany[roomId] - 1;
+    console.log(howMany);
+    socket.leave(roomId);
+    socket.broadcast.emit('update', howMany);
   });
 });

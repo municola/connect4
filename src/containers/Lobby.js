@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
 import Main from './Main.js';
-import { setUsername, joinTrue, room, peopleUpdate } from '../actions/index.js';
+import { setUsername, update, confirmed, connected } from '../actions/index.js';
 
 const style = {
   body: {
@@ -22,39 +22,46 @@ class Lobby extends Component {
   }
 
   @autobind
-  join() {
-    this.props.joinTrue();
-    this.props.lobby.socket.emit('update');
-    this.props.lobby.socket.on('update', (people) => {
-      this.props.peopleUpdate(people);
+  connect() {
+    console.log('connect loop');
+    console.log(this.props.lobby.socket);
+    this.props.lobby.socket.emit('connectMe');
+    this.props.lobby.socket.on('update', (howMany) => {
+      this.props.update(howMany);
     });
+    this.props.lobby.socket.on('connected', () => this.props.connected());
   }
 
   @autobind
-  connect(i) {
-    this.props.lobby.socket.emit('subscribe', i);
-    this.props.room(i);
+  subscribe(roomId) {
+    this.props.lobby.socket.emit('subscribe', roomId);
+    this.props.lobby.socket.on('update', (howMany) => {
+      this.props.update(howMany);
+    });
+    this.props.lobby.socket.on('confirmed', () => {
+      this.props.confirmed();
+    });
   }
 
   render() {
-    if (this.props.lobby.join === true) {
-      if (this.props.lobby.subscribed === true) {
+    if (this.props.tale.connected === true) {
+      if (this.props.tale.subscribed === true) {
         return <Main />;
       }
       return (
         <div style={style.chatRooms}>
-          <button style={style.roomButton} onClick={() => this.connect(0)}>Room 1</button>
-          <p>{this.props.lobby.people[0]}</p>
-          <button style={style.roomButton} onClick={() => this.connect(1)}>Room 2</button>
-          <p>{this.props.lobby.people[1]}</p>
-          <button style={style.roomButton} onClick={() => this.connect(2)}>Room 3</button>
-          <p>{this.props.lobby.people[2]}</p>
+          <button style={style.roomButton} onClick={() => this.subscribe(0)}>Room 1</button>
+          <p>{this.props.tale.howMany[0]}</p>
+          <button style={style.roomButton} onClick={() => this.subscribe(1)}>Room 2</button>
+          <p>{this.props.tale.howMany[1]}</p>
+          <button style={style.roomButton} onClick={() => this.subscribe(2)}>Room 3</button>
+          <p>{this.props.tale.howMany[2]}</p>
         </div>
       );
     }
     return (
       <div style={style.body}>
-        <LocalForm style={style.form} onSubmit={() => this.join()}>
+        <LocalForm style={style.form} onSubmit={() => this.connect()}>
           <p style={style.fontOne}>Username: </p>
           <input
             style={style.input}
@@ -68,20 +75,21 @@ class Lobby extends Component {
 
 function mapStateToProps(state) {
   return {
+    tale: state.tales,
     lobby: state.lobby,
   };
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ setUsername, joinTrue, room, peopleUpdate }, dispatch);
+  return bindActionCreators({ setUsername, update, confirmed, connected }, dispatch);
 }
 
 Lobby.propTypes = {
+  tale: React.PropTypes.object.isRequired,
   lobby: React.PropTypes.object.isRequired,
   setUsername: React.PropTypes.func.isRequired,
-  joinTrue: React.PropTypes.func.isRequired,
-  room: React.PropTypes.func.isRequired,
-  peopleUpdate: React.PropTypes.func.isRequired,
+  update: React.PropTypes.func.isRequired,
+  confirmed: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

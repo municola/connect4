@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { clickButton, undo, finishTurn, ready, myTurn, enemyTurn, symbol } from '../actions/index.js';
+import { clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol } from '../actions/index.js';
 
 const style = {
   body: {
@@ -29,11 +29,10 @@ const style = {
 
 class App extends Component {
   componentDidMount() {
-    this.props.lobby.socket.emit('ready', (this.props.lobby.room));
-    this.props.lobby.socket.on('start', () => {
-      this.props.myTurn();
+    this.props.lobby.socket.on('ready', (sym, message) => this.props.symbol(sym, message));
+    this.props.lobby.socket.on('firstTurn', () => {
+      this.props.firstTurn();
     });
-    this.props.lobby.socket.on('symbol', (symbol) => this.props.symbol(symbol));
     this.props.lobby.socket.on('turn', (table) => this.props.enemyTurn(table));
   }
 
@@ -73,7 +72,7 @@ class App extends Component {
     if (this.props.tale.undoAvailable) {
       return (
         <button
-          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.lobby.room, this.props.tale.cells)}
+          onClick={() => this.props.finishTurn(this.props.lobby.socket, this.props.tale.cells)}
         >finish turn</button>
       );
     }
@@ -84,7 +83,7 @@ class App extends Component {
     return (
       <div style={style.body}>
         <div style={style.container}>
-          {this.props.tale.announcement}
+          {this.props.tale.message}
           <div style={style.buttonField}>
             {this.getButtons()}
           </div>
@@ -104,7 +103,7 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton, undo, finishTurn, ready, myTurn, enemyTurn, symbol }, dispatch);
+  return bindActionCreators({ clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol }, dispatch);
 }
 
 App.propTypes = {
@@ -113,8 +112,6 @@ App.propTypes = {
   undo: React.PropTypes.func.isRequired,
   clickButton: React.PropTypes.func.isRequired,
   finishTurn: React.PropTypes.func.isRequired,
-  ready: React.PropTypes.func.isRequired,
-  myTurn: React.PropTypes.func.isRequired,
   enemyTurn: React.PropTypes.func.isRequired,
   symbol: React.PropTypes.func.isRequired,
 };

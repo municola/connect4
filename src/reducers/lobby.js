@@ -1,10 +1,6 @@
 const initialState = {
   username: '',
-  join: false,
   socket: '',
-  room: '',
-  people: [0, 0, 0],
-  subscribed: false,
 };
 
 export default function lobby(state = initialState, action) {
