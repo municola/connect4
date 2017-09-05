@@ -7,35 +7,42 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
-const howMany = [0, 0, 0];
+let howMany = [[], [], []];
+
+function howManyPeople(arr) {
+  return arr.map((item) => {
+    return item.length;
+  });
+}
 
 io.on('connection', (socket) => {
   console.log(socket.id, 'connected');
   socket.on('connectMe', () => {
     console.log('func: connect');
     socket.emit('connected');
-    socket.emit('update', howMany);
+    socket.emit('update', howManyPeople(howMany));
   });
   socket.on('subscribe', (roomId) => {
-    console.log('readycount: ', howMany);
-    if (howMany[roomId] === 1) {
-      console.log('howMany === 1', howMany[roomId]);
+    const people = howManyPeople(howMany);
+    console.log('readycount: ', people);
+    if (people[roomId] === 1) {
+      console.log('people === 1', people[roomId]);
       socket.join(roomId);
-      howMany[roomId] = 2;
+      howMany[roomId].push(socket.id);
       socket.emit('confirmed');
       socket.emit('ready', 'X', 'Your Turn');
       socket.to(roomId).emit('ready', 'O', 'Enemy Turn');
       socket.emit('firstTurn');
-      socket.emit('update', howMany);
-      socket.broadcast.emit('update', howMany);
+      socket.emit('update', people);
+      socket.broadcast.emit('update', people);
     }
-    if (howMany[roomId] === 0) {
-      console.log('howMany === 0', howMany[roomId]);
+    if (people[roomId] === 0) {
+      console.log('howMany === 0', people[roomId]);
       socket.join(roomId);
-      howMany[roomId] = 1;
-      socket.emit('update', howMany);
+      howMany[roomId].push(socket.id);
+      socket.emit('update', people);
       socket.emit('confirmed');
-      socket.broadcast.emit('update', howMany);
+      socket.broadcast.emit('update', people);
     }
   });
   socket.on('turn', (table) => {
@@ -43,11 +50,14 @@ io.on('connection', (socket) => {
   });
   socket.on('disconnect', () => {
     console.log(socket.id, 'disconnect');
-    const roomId = socket.rooms[Object.keys(socket.rooms)[0]];
-    console.log('roomId: ', roomId);
-    howMany[roomId] = howMany[roomId] - 1;
-    console.log(howMany);
-    socket.leave(roomId);
-    socket.broadcast.emit('update', howMany);
+    console.log('before', howMany);
+    console.log('socket.id; ', socket.id);
+    howMany = howMany.filter((item) => {
+      return item.filter((item2) => {
+        return item2 !== socket.id;
+      });
+    });
+    console.log('after', howMany);
+    socket.broadcast.emit('update', howManyPeople(howMany));
   });
 });
