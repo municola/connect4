@@ -7,7 +7,7 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
-let howMany = [[], [], []];
+const howMany = [[], [], []];
 
 function howManyPeople(arr) {
   return arr.map((item) => {
@@ -33,16 +33,16 @@ io.on('connection', (socket) => {
       socket.emit('ready', 'X', 'Your Turn');
       socket.to(roomId).emit('ready', 'O', 'Enemy Turn');
       socket.emit('firstTurn');
-      socket.emit('update', people);
-      socket.broadcast.emit('update', people);
+      socket.emit('update', howManyPeople(howMany));
+      socket.broadcast.emit('update', howManyPeople(howMany));
     }
     if (people[roomId] === 0) {
       console.log('howMany === 0', people[roomId]);
       socket.join(roomId);
       howMany[roomId].push(socket.id);
-      socket.emit('update', people);
       socket.emit('confirmed', roomId);
-      socket.broadcast.emit('update', people);
+      socket.emit('update', howManyPeople(howMany));
+      socket.broadcast.emit('update', howManyPeople(howMany));
     }
   });
   socket.on('turn', (table) => {
@@ -50,7 +50,11 @@ io.on('connection', (socket) => {
   });
   socket.on('unsubscribe', (roomId) => {
     socket.leave(roomId);
-    howMany[roomId] = howMany[roomId] - 1;
+    for (let i = 0; i < howMany.length; i++) {
+      howMany[i] = howMany[i].filter((item) => {
+        return item !== socket.id;
+      });
+    }
     socket.emit('unsubscribed');
     socket.emit('update', howManyPeople(howMany));
     socket.broadcast.emit('update', howManyPeople(howMany));
