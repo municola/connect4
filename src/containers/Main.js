@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import styles from '../css/ConnectFour.css';
 import {
   clickButton,
   undo, finishTurn,
@@ -13,25 +14,58 @@ import {
 
 const style = {
   body: {
+    display: 'flex',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
+    backgroundColor: '#076689',
+    minHeight: '100vh',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
-    paddingTop: '300px',
-    width: '420px',
+    width: '490px',
     margin: 'auto',
+  },
+  container2: {
+
   },
   buttonField: {
     display: 'flex',
     flexWrap: 'wrap',
-    width: '420px',
+    width: '490px',
+  },
+  sym: {
+    margin: '0px',
+    fontSize: '30px',
+    color: '#076689',
+  },
+  fontOne: {
+    fontSize: '30px',
+    color: '#FBC75A',
+  },
+  buttonArea: {
+    display: 'flex',
+    marginTop: '30px',
+  },
+  areaOne: {
+    width: '245px',
+  },
+  areTwo: {
+    width: '245',
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   button: {
-    width: '60px',
-    height: '60px',
+    color: '#076689 ',
+    backgroundColor: '#FBC75A',
+    border: '1px solid grey',
+    fontSize: '20px',
+    padding: '10px',
   },
-  undo: {
-    margin: 'middle',
+  leaveArea: {
+    marginTop: '30px',
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
 };
 
@@ -52,9 +86,9 @@ class App extends Component {
       return (
         <button
           onClick={() => this.handleButtonClick(index)}
-          style={style.button}
+          className={styles.button}
           key={index}
-        >{this.props.tale.cells[index]}</button>
+        ><p style={style.sym}>{this.props.tale.cells[index]}</p></button>
       );
     });
   }
@@ -113,25 +147,26 @@ class App extends Component {
       return (
         <button
           onClick={() => this.props.undo(this.props.tale.count)}
-          style={style.undo}
+          className={styles.buttonType2}
         >Undo</button>
       );
     }
-    return false;
+    return <button className={styles.buttonType2}>Undo</button>;
   }
 
   finishTurnButton() {
     if (this.props.tale.undoAvailable) {
       return (
         <button
+          className={styles.buttonType2}
           onClick={() => {
             this.checkForWinner();
             this.props.finishTurn(this.props.lobby.socket, this.props.tale.cells);
           }}
-        >finish turn</button>
+        >Finish Turn</button>
       );
     }
-    return false;
+    return <button className={styles.buttonType2}>Finish Turn</button>;
   }
 
   leave() {
@@ -140,27 +175,43 @@ class App extends Component {
   }
 
   render() {
-    if (this.props.tale.winner === false) {
+    if (!this.props.tale.winner) {
       return (
         <div style={style.body}>
           <div style={style.container}>
-            {this.props.tale.message}
+            <p style={style.fontOne}>{this.props.tale.message}</p>
             <div style={style.buttonField}>
               {this.getButtons()}
             </div>
+            <div style={style.buttonArea}>
+              <div style={style.areaOne}>
+                {this.undoButon()}
+                {this.finishTurnButton()}
+              </div>
+              <div style={style.areTwo}>
+                <button
+                  className={styles.buttonType2}
+                  onClick={() => this.leave()}
+                >Leave Game</button>
+              </div>
+            </div>
           </div>
-          {this.undoButon()}
-          {this.finishTurnButton()}
-          <button onClick={() => this.leave()}>leave Game</button>
         </div>
       );
     } return (
-      <div>
-        {this.props.tale.winnerMessage}
-        <div style={style.buttonField}>
-          {this.getButtons()}
+      <div style={style.body}>
+        <div style={style.container2}>
+          <p style={style.fontOne}>{this.props.tale.winnerMessage}</p>
+          <div style={style.buttonField}>
+            {this.getButtons()}
+          </div>
+          <div style={style.leaveArea}>
+            <button
+              className={styles.buttonType2}
+              onClick={() => this.leave()}
+            >Leave Game</button>
+          </div>
         </div>
-        <button onClick={() => this.leave()}>leave Game</button>
       </div>
     );
   }
@@ -197,6 +248,7 @@ App.propTypes = {
   symbol: React.PropTypes.func.isRequired,
   unsubscribed: React.PropTypes.func.isRequired,
   setWinner: React.PropTypes.func.isRequired,
+  firstTurn: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);

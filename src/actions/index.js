@@ -70,7 +70,6 @@ export const confirmed = (roomId) => {
 };
 
 export const connected = () => {
-  console.log('action');
   return {
     type: 'CONNECTED',
   };
