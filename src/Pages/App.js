@@ -5,7 +5,7 @@ import { autobind } from 'core-decorators';
 import io from 'socket.io-client';
 
 import Lobby from '../containers/Lobby.js';
-import { initSocket, myTurn, enemyTurn } from '../actions/index.js';
+import { initSocket } from '../actions/index.js';
 
 
 class App extends Component {
@@ -23,21 +23,12 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    lobby: state.lobby,
-    tales: state.tales,
-  };
-}
-
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ initSocket, myTurn, enemyTurn }, dispatch);
+  return bindActionCreators({ initSocket }, dispatch);
 }
 
 App.propTypes = {
-  lobby: React.PropTypes.object.isRequired,
   initSocket: React.PropTypes.func,
-  myTurn: React.PropTypes.func,
 };
 
-export default connect(mapStateToProps, matchDispatchToProps)(App);
+export default connect(matchDispatchToProps)(App);
