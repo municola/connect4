@@ -88,3 +88,10 @@ export const unsubscribed = () => {
     type: 'UNSUBSCRIBED',
   };
 };
+
+export const setWinner = (message) => {
+  return {
+    type: 'SET_WINNER',
+    message,
+  };
+};

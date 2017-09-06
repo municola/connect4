@@ -18,15 +18,12 @@ function howManyPeople(arr) {
 io.on('connection', (socket) => {
   console.log(socket.id, 'connected');
   socket.on('connectMe', () => {
-    console.log('func: connect');
     socket.emit('connected');
     socket.emit('update', howManyPeople(howMany));
   });
   socket.on('subscribe', (roomId) => {
     const people = howManyPeople(howMany);
-    console.log('readycount: ', people);
     if (people[roomId] === 1) {
-      console.log('people === 1', people[roomId]);
       socket.join(roomId);
       howMany[roomId].push(socket.id);
       socket.emit('confirmed', roomId);
@@ -37,7 +34,6 @@ io.on('connection', (socket) => {
       socket.broadcast.emit('update', howManyPeople(howMany));
     }
     if (people[roomId] === 0) {
-      console.log('howMany === 0', people[roomId]);
       socket.join(roomId);
       howMany[roomId].push(socket.id);
       socket.emit('confirmed', roomId);
@@ -47,6 +43,9 @@ io.on('connection', (socket) => {
   });
   socket.on('turn', (table) => {
     socket.to(socket.rooms[Object.keys(socket.rooms)[0]]).emit('turn', table);
+  });
+  socket.on('winner', () => {
+    socket.to(socket.rooms[Object.keys(socket.rooms)[0]]).emit('winner');
   });
   socket.on('unsubscribe', (roomId) => {
     socket.leave(roomId);
@@ -71,7 +70,6 @@ io.on('connection', (socket) => {
         }
       }
     }
-    console.log('after', howMany);
     socket.broadcast.emit('update', howManyPeople(howMany));
   });
 });

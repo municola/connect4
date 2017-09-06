@@ -7,11 +7,13 @@ const initialState = {
   mySymbol: '',
   howMany: [],
   message: 'Wait for the other Player',
+  winnerMessage: '',
   roomId: undefined,
 
   finishTurn: false,
   undoAvailable: false,
   username: '',
+  winner: false,
 
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -160,13 +162,38 @@ export default function tales(state = initialState, action) {
     case 'UNSUBSCRIBED' : {
       return {
         ...state,
+        winnerMessage: '',
         subscribed: false,
         start: false,
         myTurn: false,
         mySymbol: '',
         message: 'Wait for the other Player',
         roomId: undefined,
+        finishTurn: false,
+        undoAvailable: false,
+        winner: false,
+        cells: [
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+        ],
+        past: [
+          [
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+            ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+          ],
+        ],
       };
+    }
+    case 'SET_WINNER' : {
+      return { ...state, winner: true, winnerMessage: action.message, undoAvailable: false };
     }
     default: {
       return state;
