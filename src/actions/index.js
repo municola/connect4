@@ -62,9 +62,10 @@ export const symbol = (sym, message) => {
   };
 };
 
-export const confirmed = () => {
+export const confirmed = (roomId) => {
   return {
     type: 'CONFIRMED',
+    roomId,
   };
 };
 
@@ -79,5 +80,11 @@ export const update = (howMany) => {
   return {
     type: 'UPDATE',
     howMany,
+  };
+};
+
+export const unsubscribed = () => {
+  return {
+    type: 'UNSUBSCRIBED',
   };
 };

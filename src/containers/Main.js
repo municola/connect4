@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol } from '../actions/index.js';
+import { clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol, unsubscribed } from '../actions/index.js';
 
 const style = {
   body: {
@@ -79,6 +79,11 @@ class App extends Component {
     return false;
   }
 
+  leave() {
+    this.props.lobby.socket.emit('unsubscribe', this.props.tale.roomId);
+    this.props.lobby.socket.on('unsubscribed', () => this.props.unsubscribed());
+  }
+
   render() {
     return (
       <div style={style.body}>
@@ -90,6 +95,7 @@ class App extends Component {
         </div>
         {this.undoButon()}
         {this.finishTurnButton()}
+        <button onClick={() => this.leave()}>leave Game</button>
       </div>
     );
   }
@@ -103,7 +109,7 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol }, dispatch);
+  return bindActionCreators({ clickButton, undo, finishTurn, ready, firstTurn, enemyTurn, symbol, unsubscribed }, dispatch);
 }
 
 App.propTypes = {
@@ -114,6 +120,7 @@ App.propTypes = {
   finishTurn: React.PropTypes.func.isRequired,
   enemyTurn: React.PropTypes.func.isRequired,
   symbol: React.PropTypes.func.isRequired,
+  unsubscribed: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);

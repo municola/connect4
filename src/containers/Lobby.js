@@ -39,7 +39,7 @@ class Lobby extends Component {
       this.props.update(howMany);
     });
     this.props.lobby.socket.on('confirmed', () => {
-      this.props.confirmed();
+      this.props.confirmed(roomId);
     });
   }
 

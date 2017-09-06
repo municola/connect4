@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
       console.log('people === 1', people[roomId]);
       socket.join(roomId);
       howMany[roomId].push(socket.id);
-      socket.emit('confirmed');
+      socket.emit('confirmed', roomId);
       socket.emit('ready', 'X', 'Your Turn');
       socket.to(roomId).emit('ready', 'O', 'Enemy Turn');
       socket.emit('firstTurn');
@@ -41,21 +41,31 @@ io.on('connection', (socket) => {
       socket.join(roomId);
       howMany[roomId].push(socket.id);
       socket.emit('update', people);
-      socket.emit('confirmed');
+      socket.emit('confirmed', roomId);
       socket.broadcast.emit('update', people);
     }
   });
   socket.on('turn', (table) => {
     socket.to(socket.rooms[Object.keys(socket.rooms)[0]]).emit('turn', table);
   });
+  socket.on('unsubscribe', (roomId) => {
+    socket.leave(roomId);
+    howMany[roomId] = howMany[roomId] - 1;
+    socket.emit('unsubscribed');
+    socket.emit('update', howManyPeople(howMany));
+    socket.broadcast.emit('update', howManyPeople(howMany));
+  });
   socket.on('disconnect', () => {
     console.log(socket.id, 'disconnect');
-    console.log('before', howMany);
-    console.log('socket.id; ', socket.id);
     for (let i = 0; i < howMany.length; i++) {
       howMany[i] = howMany[i].filter((item) => {
         return item !== socket.id;
       });
+      for (let j = 0; j < 2; j++) {
+        if (howMany[i][j] === socket.id) {
+          socket.leave(howMany[i][j]);
+        }
+      }
     }
     console.log('after', howMany);
     socket.broadcast.emit('update', howManyPeople(howMany));

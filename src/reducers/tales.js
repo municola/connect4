@@ -7,6 +7,7 @@ const initialState = {
   mySymbol: '',
   howMany: [],
   message: 'Wait for the other Player',
+  roomId: undefined,
 
   finishTurn: false,
   undoAvailable: false,
@@ -148,13 +149,24 @@ export default function tales(state = initialState, action) {
       };
     }
     case 'CONFIRMED' : {
-      return { ...state, subscribed: true };
+      return { ...state, subscribed: true, roomId: action.roomId };
     }
     case 'CONNECTED' : {
       return { ...state, connected: true };
     }
     case 'UPDATE' : {
       return { ...state, howMany: action.howMany };
+    }
+    case 'UNSUBSCRIBED' : {
+      return {
+        ...state,
+        subscribed: false,
+        start: false,
+        myTurn: false,
+        mySymbol: '',
+        message: 'Wait for the other Player',
+        roomId: undefined,
+      };
     }
     default: {
       return state;
