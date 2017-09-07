@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styles from '../css/ConnectFour.css';
 import wcn from '../static/winCombo.js';
+import GameChat from './GameChat.js';
 import {
   clickButton,
   enemyTurn,
@@ -10,6 +11,7 @@ import {
   firstTurn,
   ready,
   symbol,
+  setEnemyName,
   setWinner,
   undo,
   unsubscribed,
@@ -28,9 +30,6 @@ const style = {
   container: {
     width: '490px',
     margin: 'auto',
-  },
-  container2: {
-
   },
   buttonField: {
     display: 'flex',
@@ -82,6 +81,7 @@ class App extends Component {
     this.props.socket.socket.on('winner', () => {
       this.props.setWinner('You Lost');
     });
+    this.props.socket.socket.on('players', (enemyName) => this.props.setEnemyName(enemyName));
   }
 
   getButtons() {
@@ -172,12 +172,13 @@ class App extends Component {
                 >Leave Game</button>
               </div>
             </div>
+            <GameChat />
           </div>
         </div>
       );
     } return (
       <div style={style.body}>
-        <div style={style.container2}>
+        <div>
           <p style={style.fontOne}>{this.props.game.winnerMessage}</p>
           <div style={style.buttonField}>
             {this.getButtons()}
@@ -209,6 +210,7 @@ function matchDispatchToProps(dispatch) {
     firstTurn,
     ready,
     symbol,
+    setEnemyName,
     setWinner,
     undo,
     unsubscribed,

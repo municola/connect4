@@ -88,10 +88,50 @@ export const unsubscribed = () => {
   };
 };
 
-export const update = (howMany) => {
+export const updateHowMany = (howMany) => {
   return {
-    type: 'UPDATE',
+    type: 'UPDATE_HOW_MANY',
     howMany,
   };
 };
 
+export const updateMembers = (members) => {
+  console.log('updateMembers', members);
+  return {
+    type: 'UPDATE_MEMBERS',
+    members,
+  };
+};
+
+export const newMessage = (id, username, message) => {
+  return {
+    type: 'NEW_MESSAGE',
+    id,
+    username,
+    message,
+  };
+};
+
+export const newUser = (id, username) => {
+  return {
+    type: 'NEW_USER',
+    id,
+    username,
+  };
+};
+
+export const setEnemyName = (name) => {
+  return {
+    type: 'SET_ENEMY_NAME',
+    name,
+  };
+};
+
+export const newGameMessage = (id, username, message) => {
+  return {
+    type: 'NEW_GAME_MESSAGE',
+    id,
+    username,
+    message,
+  };
+};

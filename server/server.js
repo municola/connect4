@@ -8,6 +8,7 @@ const io = require('socket.io')(4003, {
 });
 
 const howMany = [[], [], []];
+let members = [];
 
 function howManyPeople(arr) {
   return arr.map((item) => {
@@ -17,9 +18,22 @@ function howManyPeople(arr) {
 
 io.on('connection', (socket) => {
   console.log(socket.id, 'connected');
-  socket.on('connectMe', () => {
+  socket.on('connectMe', (username) => {
+    members.push([socket.id, username]);
     socket.emit('connected');
     socket.emit('update', howManyPeople(howMany));
+
+    socket.emit('updateMembers', members);
+
+    socket.broadcast.emit('newUser', 2, username);
+  });
+  socket.on('send', (message, username) => {
+    socket.broadcast.emit('newMessage', 1, username, message);
+    socket.emit('newMessage', 0, username, message);
+  });
+  socket.on('gameMessage', (roomId, message, username) => {
+    socket.emit('newGameMessage', 0, username, message);
+    socket.to(roomId).emit('newGameMessage', 1, username, message);
   });
   socket.on('subscribe', (roomId) => {
     const people = howManyPeople(howMany);
@@ -29,6 +43,10 @@ io.on('connection', (socket) => {
       socket.emit('confirmed', roomId);
       socket.emit('ready', 'X', 'Your Turn');
       socket.to(roomId).emit('ready', 'O', 'Enemy Turn');
+
+      socket.emit('players', howMany[roomId][0]);
+      socket.to(roomId).emit('players', howMany[roomId][1]);
+
       socket.emit('firstTurn');
       socket.emit('update', howManyPeople(howMany));
       socket.broadcast.emit('update', howManyPeople(howMany));
@@ -70,6 +88,12 @@ io.on('connection', (socket) => {
         }
       }
     }
+    console.log(members);
+    members = members.filter((item) => {
+      return item[0] !== socket.id;
+    });
+    console.log(members);
     socket.broadcast.emit('update', howManyPeople(howMany));
+    socket.broadcast.emit('updateMembers', members);
   });
 });

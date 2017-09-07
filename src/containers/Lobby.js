@@ -4,7 +4,14 @@ import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
 import Main from './Main.js';
-import { confirmed, connected, setUsername, update } from '../actions/index.js';
+import Chat from './Chat.js';
+import {
+  confirmed,
+  connected,
+  setUsername,
+  updateHowMany,
+  updateMembers,
+} from '../actions/index.js';
 
 const style = {
   body: {
@@ -35,7 +42,7 @@ const style = {
     padding: '10px',
     fontSize: '30px',
     color: '#076689 ',
-    backgroundColor: 'grey',
+    backgroundColor: '#FBC75A',
     border: '1px solid grey',
   },
   lobby: {
@@ -82,9 +89,12 @@ class Lobby extends Component {
 
   @autobind
   connect() {
-    this.props.socket.socket.emit('connectMe');
+    this.props.socket.socket.emit('connectMe', this.props.game.username);
     this.props.socket.socket.on('update', (howMany) => {
-      this.props.update(howMany);
+      this.props.updateHowMany(howMany);
+    });
+    this.props.socket.socket.on('updateMembers', (members) => {
+      this.props.updateMembers(members);
     });
     this.props.socket.socket.on('connected', () => this.props.connected());
   }
@@ -93,7 +103,7 @@ class Lobby extends Component {
   subscribe(roomId) {
     this.props.socket.socket.emit('subscribe', roomId);
     this.props.socket.socket.on('update', (howMany) => {
-      this.props.update(howMany);
+      this.props.updateHowMany(howMany);
     });
     this.props.socket.socket.on('confirmed', () => {
       this.props.confirmed(roomId);
@@ -128,6 +138,7 @@ class Lobby extends Component {
               <p style={style.howMany}>{this.props.game.howMany[2]}</p>
             </div>
           </div>
+          <Chat />
         </div>
       );
     }
@@ -154,7 +165,13 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ confirmed, connected, setUsername, update }, dispatch);
+  return bindActionCreators({
+    confirmed,
+    connected,
+    setUsername,
+    updateHowMany,
+    updateMembers,
+  }, dispatch);
 }
 
 Lobby.propTypes = {
@@ -163,7 +180,8 @@ Lobby.propTypes = {
   game: React.PropTypes.object.isRequired,
   setUsername: React.PropTypes.func.isRequired,
   socket: React.PropTypes.object.isRequired,
-  update: React.PropTypes.func.isRequired,
+  updateHowMany: React.PropTypes.func.isRequired,
+  updateMembers: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

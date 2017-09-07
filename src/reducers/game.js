@@ -1,5 +1,6 @@
 const initialState = {
   connected: false,
+  enemy: '',
   howMany: [],
   message: 'Wait for the other Player',
   mySymbol: '',
@@ -138,6 +139,9 @@ export default function game(state = initialState, action) {
     case 'FIRST_TURN' : {
       return { ...state, myTurn: true };
     }
+    case 'SET_ENEMY_NAME' : {
+      return { ...state, enemy: action.name };
+    }
     case 'SET_USERNAME' : {
       return { ...state, username: action.username };
     }
@@ -194,7 +198,7 @@ export default function game(state = initialState, action) {
         ],
       };
     }
-    case 'UPDATE' : {
+    case 'UPDATE_HOW_MANY' : {
       return { ...state, howMany: action.howMany };
     }
     default: {
