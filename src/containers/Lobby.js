@@ -24,6 +24,15 @@ const style = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bodyLobby: {
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: '2rem',
+    fontFamily: 'sans-serif',
+    backgroundColor: '#076689',
+    minHeight: '100vh',
+    padding: '200px',
+  },
   welcomeBlock: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -116,10 +125,11 @@ class Lobby extends Component {
         return <Main />;
       }
       return (
-        <div style={style.body}>
+        <div style={style.bodyLobby}>
           <div style={style.welcomeBlock}>
             <p style={style.fontOne}>Hi {this.props.game.username}</p>
           </div>
+          <Chat />
           <div style={style.lobby}>
             <div style={style.announcerRow}>
               <p style={style.announcer}>Games: </p>
@@ -138,7 +148,6 @@ class Lobby extends Component {
               <p style={style.howMany}>{this.props.game.howMany[2]}</p>
             </div>
           </div>
-          <Chat />
         </div>
       );
     }

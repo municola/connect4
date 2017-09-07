@@ -16,6 +16,18 @@ const style = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  memberBox: {
+    display: 'flex',
+  },
+  fontOne: {
+    color: 'grey',
+  },
+  you: {
+    margin: '0px',
+  },
+  otherUser: {
+    margin: '0px',
+  },
 };
 
 class Chat extends Component {
@@ -36,22 +48,22 @@ class Chat extends Component {
   }
 
   getMembers() {
-    return this.props.chat.members.map((item) => {
-      return <p>{item[1]}</p>;
+    return this.props.chat.members.map((item, i) => {
+      return <p style={style.fontOne} key={i}>Members: {item[1]}</p>;
     });
   }
 
   getChatlog() {
-    return this.props.chat.chatlog.map((item) => {
+    return this.props.chat.chatlog.map((item, i) => {
       switch (item[0]) {
         case 0 : {
-          return <p style={style.you}>{item[2]}</p>;
+          return <p key={i} style={style.you}>{item[2]}</p>;
         }
         case 1 : {
-          return <p style={style.otherUser}>{item[1]} : {item[2]}</p>;
+          return <p key={i} style={style.otherUser}>{item[1]} : {item[2]}</p>;
         }
         case 2 : {
-          return <p style={style.server}>{item[1]} {item[2]}}</p>;
+          return <p key={i} style={style.server}>{item[1]} {item[2]}</p>;
         }
         default : {
           return false;
@@ -76,7 +88,10 @@ class Chat extends Component {
   render() {
     return (
       <div>
-        {this.getMembers()}
+        <div style={style.memberBox}>
+          {this.getMembers()}
+        </div>
+        {this.getChatlog()}
         <LocalForm style={style.form} onSubmit={() => this.send()}>
           <input
             value={this.state.input}
@@ -84,7 +99,6 @@ class Chat extends Component {
           />
           <button type="submit">send</button>
         </LocalForm>
-        {this.getChatlog()}
       </div>
     );
   }

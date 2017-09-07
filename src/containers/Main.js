@@ -25,11 +25,20 @@ const style = {
     backgroundColor: '#076689',
     minHeight: '100vh',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  container: {
-    width: '490px',
-    margin: 'auto',
+  chatContainer: {
+    display: 'flex',
+    width: '25%',
+    padding: '100px',
+  },
+  gameContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '75%',
+  },
+  innerGameContainer: {
+
   },
   buttonField: {
     display: 'flex',
@@ -155,39 +164,48 @@ class App extends Component {
     if (!this.props.game.winner) {
       return (
         <div style={style.body}>
-          <div style={style.container}>
-            <p style={style.fontOne}>{this.props.game.message}</p>
-            <div style={style.buttonField}>
-              {this.getButtons()}
-            </div>
-            <div style={style.buttonArea}>
-              <div style={style.areaOne}>
-                {this.undoButon()}
-                {this.finishTurnButton()}
-              </div>
-              <div style={style.areTwo}>
-                <button
-                  className={styles.buttonType2}
-                  onClick={() => this.leave()}
-                >Leave Game</button>
-              </div>
-            </div>
+          <div style={style.chatContainer}>
             <GameChat />
+          </div>
+          <div style={style.gameContainer}>
+            <div style={style.innerGameContainer}>
+              <p style={style.fontOne}>{this.props.game.message}</p>
+              <div style={style.buttonField}>
+                {this.getButtons()}
+              </div>
+              <div style={style.buttonArea}>
+                <div style={style.areaOne}>
+                  {this.undoButon()}
+                  {this.finishTurnButton()}
+                </div>
+                <div style={style.areTwo}>
+                  <button
+                    className={styles.buttonType2}
+                    onClick={() => this.leave()}
+                  >Leave Game</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       );
     } return (
       <div style={style.body}>
-        <div>
-          <p style={style.fontOne}>{this.props.game.winnerMessage}</p>
-          <div style={style.buttonField}>
-            {this.getButtons()}
-          </div>
-          <div style={style.leaveArea}>
-            <button
-              className={styles.buttonType2}
-              onClick={() => this.leave()}
-            >Leave Game</button>
+        <div style={style.chatContainer}>
+          <GameChat />
+        </div>
+        <div style={style.gameContainer}>
+          <div style={style.innerGameContainer}>
+            <p style={style.fontOne}>{this.props.game.winnerMessage}</p>
+            <div style={style.buttonField}>
+              {this.getButtons()}
+            </div>
+            <div style={style.leaveArea}>
+              <button
+                className={styles.buttonType2}
+                onClick={() => this.leave()}
+              >Leave Game</button>
+            </div>
           </div>
         </div>
       </div>

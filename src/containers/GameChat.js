@@ -6,15 +6,45 @@ import { LocalForm } from 'react-redux-form';
 import { newMessage, newUser, newGameMessage } from '../actions/index.js';
 
 const style = {
-  body: {
+  container: {
     display: 'flex',
+    width: '100%',
     flexDirection: 'column',
-    fontSize: '2rem',
-    fontFamily: 'sans-serif',
-    backgroundColor: '#076689',
-    minHeight: '100vh',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  chatlog: {
+    height: '93%',
+    padding: '20px',
+    backgroundColor: 'grey',
+  },
+  form: {
+    display: 'flex',
+    height: '7%',
+    justifyContent: 'space-between',
+  },
+  input: {
+    width: '70%',
+    padding: '15px',
+    fontSize: '20px',
+    color: '#076689',
+    backgroundColor: '#FBC75A',
+    border: 'none',
+  },
+  submitButton: {
+    width: '30%',
+  },
+  you: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  otherUser: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  chatFont: {
+    margin: '0px',
+    color: '#FBC75A',
   },
 };
 
@@ -33,13 +63,17 @@ class GameChat extends Component {
   }
 
   getChatlog() {
-    return this.props.chat.gamechatlog.map((item) => {
+    return this.props.chat.gamechatlog.map((item, i) => {
       switch (item[0]) {
         case 0 : {
-          return <p style={style.you}>{item[2]}</p>;
+          return <div style={style.you} key={i}><p style={style.chatFont}>{item[2]}</p></div>;
         }
         case 1 : {
-          return <p style={style.otherUser}>{item[1]} : {item[2]}</p>;
+          return (
+            <div style={style.otherUser} key={i}>
+              <p style={style.chatFont}>{item[1]} : {item[2]}</p>
+            </div>
+          );
         }
         default : {
           return false;
@@ -50,9 +84,7 @@ class GameChat extends Component {
 
   @autobind
   change(event) {
-    if (event.target.value !== '') {
-      this.setState({ input: event.target.value });
-    }
+    this.setState({ input: event.target.value });
   }
 
   @autobind
@@ -64,15 +96,18 @@ class GameChat extends Component {
 
   render() {
     return (
-      <div>
+      <div style={style.container}>
+        <div style={style.chatlog}>
+          {this.getChatlog()}
+        </div>
         <LocalForm style={style.form} onSubmit={() => this.send()}>
           <input
+            style={style.input}
             value={this.state.input}
             onChange={(event) => this.change(event)}
           />
-          <button type="submit">send</button>
+          <button style={style.submitButton} type="submit">send</button>
         </LocalForm>
-        {this.getChatlog()}
       </div>
     );
   }
