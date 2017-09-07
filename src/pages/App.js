@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
+import { autobind } from 'core-decorators';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { autobind } from 'core-decorators';
 import io from 'socket.io-client';
 
 import Lobby from '../containers/Lobby.js';
 import { initSocket } from '../actions/index.js';
-
 
 class App extends Component {
   @autobind
@@ -23,6 +22,10 @@ class App extends Component {
   }
 }
 
+function mapStateToProps() {
+  return {};
+}
+
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({ initSocket }, dispatch);
 }
@@ -31,4 +34,4 @@ App.propTypes = {
   initSocket: React.PropTypes.func,
 };
 
-export default connect(matchDispatchToProps)(App);
+export default connect(mapStateToProps, matchDispatchToProps)(App);

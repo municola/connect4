@@ -1,14 +1,13 @@
 const initialState = {
-  socket: '',
   connected: false,
-  subscribed: false,
-  start: false,
-  myTurn: false,
-  mySymbol: '',
   howMany: [],
   message: 'Wait for the other Player',
-  winnerMessage: '',
+  mySymbol: '',
+  myTurn: false,
   roomId: undefined,
+  start: false,
+  subscribed: false,
+  winnerMessage: '',
 
   finishTurn: false,
   undoAvailable: false,
@@ -35,7 +34,7 @@ const initialState = {
   ],
 };
 
-export default function tales(state = initialState, action) {
+export default function game(state = initialState, action) {
   switch (action.type) {
     case 'CLICK_BUTTON': {
       let temp = state;
@@ -112,6 +111,42 @@ export default function tales(state = initialState, action) {
 
       return temp;
     }
+    case 'CONFIRMED' : {
+      return { ...state, subscribed: true, roomId: action.roomId };
+    }
+    case 'CONNECTED' : {
+      return { ...state, connected: true };
+    }
+    case 'ENEMY_TURN' : {
+      return {
+        ...state,
+        cells: action.table,
+        past: state.past.concat([action.table]),
+        myTurn: true,
+        message: 'Your Turn',
+      };
+    }
+    case 'FINISH_TURN' : {
+      return {
+        ...state,
+        finishTurn: true,
+        myTurn: false,
+        undoAvailable: false,
+        message: 'Enemy Turn',
+      };
+    }
+    case 'FIRST_TURN' : {
+      return { ...state, myTurn: true };
+    }
+    case 'SET_USERNAME' : {
+      return { ...state, username: action.username };
+    }
+    case 'SET_WINNER' : {
+      return { ...state, winner: true, winnerMessage: action.message, undoAvailable: false };
+    }
+    case 'SYMBOL' : {
+      return { ...state, mySymbol: action.sym, message: action.message };
+    }
     case 'UNDO': {
       return {
         ...state,
@@ -125,39 +160,6 @@ export default function tales(state = initialState, action) {
         ready: false,
         myTurn: true,
       };
-    }
-    case 'ENEMY_TURN' : {
-      return {
-        ...state,
-        cells: action.table,
-        past: state.past.concat([action.table]),
-        myTurn: true,
-        message: 'Your Turn',
-      };
-    }
-    case 'SYMBOL' : {
-      return { ...state, mySymbol: action.sym, message: action.message };
-    }
-    case 'FIRST_TURN' : {
-      return { ...state, myTurn: true };
-    }
-    case 'FINISH_TURN' : {
-      return {
-        ...state,
-        finishTurn: true,
-        myTurn: false,
-        undoAvailable: false,
-        message: 'Enemy Turn',
-      };
-    }
-    case 'CONFIRMED' : {
-      return { ...state, subscribed: true, roomId: action.roomId };
-    }
-    case 'CONNECTED' : {
-      return { ...state, connected: true };
-    }
-    case 'UPDATE' : {
-      return { ...state, howMany: action.howMany };
     }
     case 'UNSUBSCRIBED' : {
       return {
@@ -192,8 +194,8 @@ export default function tales(state = initialState, action) {
         ],
       };
     }
-    case 'SET_WINNER' : {
-      return { ...state, winner: true, winnerMessage: action.message, undoAvailable: false };
+    case 'UPDATE' : {
+      return { ...state, howMany: action.howMany };
     }
     default: {
       return state;

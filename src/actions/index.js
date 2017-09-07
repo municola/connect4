@@ -6,30 +6,23 @@ export const clickButton = (index, symbol) => {
   };
 };
 
-export const undo = (turn) => {
-  if (turn === 1) {
-    return {
-      type: 'UNDO',
-      turn: 0,
-    };
-  }
+export const confirmed = (roomId) => {
   return {
-    type: 'UNDO',
-    turn: 1,
+    type: 'CONFIRMED',
+    roomId,
   };
 };
 
-export const setUsername = (username) => {
+export const connected = () => {
   return {
-    type: 'SET_USERNAME',
-    username,
+    type: 'CONNECTED',
   };
 };
 
-export const initSocket = (socket) => {
+export const enemyTurn = (table) => {
   return {
-    type: 'INIT_SOCKET',
-    socket,
+    type: 'ENEMY_TURN',
+    table,
   };
 };
 
@@ -47,10 +40,24 @@ export const firstTurn = () => {
   };
 };
 
-export const enemyTurn = (table) => {
+export const initSocket = (socket) => {
   return {
-    type: 'ENEMY_TURN',
-    table,
+    type: 'INIT_SOCKET',
+    socket,
+  };
+};
+
+export const setWinner = (message) => {
+  return {
+    type: 'SET_WINNER',
+    message,
+  };
+};
+
+export const setUsername = (username) => {
+  return {
+    type: 'SET_USERNAME',
+    username,
   };
 };
 
@@ -62,16 +69,22 @@ export const symbol = (sym, message) => {
   };
 };
 
-export const confirmed = (roomId) => {
+export const undo = (turn) => {
+  if (turn === 1) {
+    return {
+      type: 'UNDO',
+      turn: 0,
+    };
+  }
   return {
-    type: 'CONFIRMED',
-    roomId,
+    type: 'UNDO',
+    turn: 1,
   };
 };
 
-export const connected = () => {
+export const unsubscribed = () => {
   return {
-    type: 'CONNECTED',
+    type: 'UNSUBSCRIBED',
   };
 };
 
@@ -82,15 +95,3 @@ export const update = (howMany) => {
   };
 };
 
-export const unsubscribed = () => {
-  return {
-    type: 'UNSUBSCRIBED',
-  };
-};
-
-export const setWinner = (message) => {
-  return {
-    type: 'SET_WINNER',
-    message,
-  };
-};

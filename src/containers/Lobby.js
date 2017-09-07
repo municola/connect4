@@ -4,17 +4,26 @@ import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
 import Main from './Main.js';
-import { setUsername, update, confirmed, connected } from '../actions/index.js';
+import { confirmed, connected, setUsername, update } from '../actions/index.js';
 
 const style = {
   body: {
     display: 'flex',
+    flexDirection: 'column',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
     backgroundColor: '#076689',
     minHeight: '100vh',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  welcomeBlock: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    width: '800px',
+  },
+  fontOne: {
+    color: '#FBC75A',
   },
   form: {
     display: 'flex',
@@ -26,7 +35,7 @@ const style = {
     padding: '10px',
     fontSize: '30px',
     color: '#076689 ',
-    backgroundColor: '#FBC75A',
+    backgroundColor: 'grey',
     border: '1px solid grey',
   },
   lobby: {
@@ -73,31 +82,34 @@ class Lobby extends Component {
 
   @autobind
   connect() {
-    this.props.lobby.socket.emit('connectMe');
-    this.props.lobby.socket.on('update', (howMany) => {
+    this.props.socket.socket.emit('connectMe');
+    this.props.socket.socket.on('update', (howMany) => {
       this.props.update(howMany);
     });
-    this.props.lobby.socket.on('connected', () => this.props.connected());
+    this.props.socket.socket.on('connected', () => this.props.connected());
   }
 
   @autobind
   subscribe(roomId) {
-    this.props.lobby.socket.emit('subscribe', roomId);
-    this.props.lobby.socket.on('update', (howMany) => {
+    this.props.socket.socket.emit('subscribe', roomId);
+    this.props.socket.socket.on('update', (howMany) => {
       this.props.update(howMany);
     });
-    this.props.lobby.socket.on('confirmed', () => {
+    this.props.socket.socket.on('confirmed', () => {
       this.props.confirmed(roomId);
     });
   }
 
   render() {
-    if (this.props.tale.connected === true) {
-      if (this.props.tale.subscribed === true) {
+    if (this.props.game.connected) {
+      if (this.props.game.subscribed) {
         return <Main />;
       }
       return (
         <div style={style.body}>
+          <div style={style.welcomeBlock}>
+            <p style={style.fontOne}>Hi {this.props.game.username}</p>
+          </div>
           <div style={style.lobby}>
             <div style={style.announcerRow}>
               <p style={style.announcer}>Games: </p>
@@ -105,15 +117,15 @@ class Lobby extends Component {
             </div>
             <div style={style.row}>
               <button style={style.roomButton} onClick={() => this.subscribe(0)}>Game 1</button>
-              <p style={style.howMany}>{this.props.tale.howMany[0]}</p>
+              <p style={style.howMany}>{this.props.game.howMany[0]}</p>
             </div>
             <div style={style.row}>
               <button style={style.roomButton} onClick={() => this.subscribe(1)}>Game 2</button>
-              <p style={style.howMany}>{this.props.tale.howMany[1]}</p>
+              <p style={style.howMany}>{this.props.game.howMany[1]}</p>
             </div>
             <div style={style.row}>
               <button style={style.roomButton} onClick={() => this.subscribe(2)}>Game 3</button>
-              <p style={style.howMany}>{this.props.tale.howMany[2]}</p>
+              <p style={style.howMany}>{this.props.game.howMany[2]}</p>
             </div>
           </div>
         </div>
@@ -136,22 +148,22 @@ class Lobby extends Component {
 
 function mapStateToProps(state) {
   return {
-    tale: state.tales,
-    lobby: state.lobby,
+    game: state.game,
+    socket: state.socket,
   };
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ setUsername, update, confirmed, connected }, dispatch);
+  return bindActionCreators({ confirmed, connected, setUsername, update }, dispatch);
 }
 
 Lobby.propTypes = {
-  tale: React.PropTypes.object.isRequired,
-  lobby: React.PropTypes.object.isRequired,
-  setUsername: React.PropTypes.func.isRequired,
-  update: React.PropTypes.func.isRequired,
   confirmed: React.PropTypes.func.isRequired,
   connected: React.PropTypes.func.isRequired,
+  game: React.PropTypes.object.isRequired,
+  setUsername: React.PropTypes.func.isRequired,
+  socket: React.PropTypes.object.isRequired,
+  update: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

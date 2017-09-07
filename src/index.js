@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
-import App from './Pages/App';
+import App from './pages/App';
 import reducer from './reducers';
 import Lobby from './containers/Lobby';
 

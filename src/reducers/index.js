@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import tales from './tales';
-import lobby from './lobby';
+import game from './game';
+import socket from './socket';
 
 
 const reducers = combineReducers({
-  tales,
-  lobby,
+  game,
+  socket,
 });
 
 export default reducers;
