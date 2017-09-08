@@ -26,19 +26,23 @@ const style = {
   },
   bodyLobby: {
     display: 'flex',
-    flexDirection: 'column',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
     backgroundColor: '#076689',
     minHeight: '100vh',
-    padding: '200px',
+    justifyContent: 'center',
+  },
+  innerContainer: {
+    padding: '10vh',
+    width: '800px',
   },
   welcomeBlock: {
     display: 'flex',
     justifyContent: 'flex-start',
-    width: '800px',
+    height: '7vh',
   },
   fontOne: {
+    margin: '0px',
     color: '#FBC75A',
   },
   form: {
@@ -59,6 +63,7 @@ const style = {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '800px',
+    height: '13vh',
   },
   row: {
     display: 'flex',
@@ -126,26 +131,28 @@ class Lobby extends Component {
       }
       return (
         <div style={style.bodyLobby}>
-          <div style={style.welcomeBlock}>
-            <p style={style.fontOne}>Hi {this.props.game.username}</p>
-          </div>
-          <Chat />
-          <div style={style.lobby}>
-            <div style={style.announcerRow}>
-              <p style={style.announcer}>Games: </p>
-              <p style={style.announcer}>Players: </p>
+          <div style={style.innerContainer}>
+            <div style={style.welcomeBlock}>
+              <p style={style.fontOne}>Hi {this.props.game.username}</p>
             </div>
-            <div style={style.row}>
-              <button style={style.roomButton} onClick={() => this.subscribe(0)}>Game 1</button>
-              <p style={style.howMany}>{this.props.game.howMany[0]}</p>
-            </div>
-            <div style={style.row}>
-              <button style={style.roomButton} onClick={() => this.subscribe(1)}>Game 2</button>
-              <p style={style.howMany}>{this.props.game.howMany[1]}</p>
-            </div>
-            <div style={style.row}>
-              <button style={style.roomButton} onClick={() => this.subscribe(2)}>Game 3</button>
-              <p style={style.howMany}>{this.props.game.howMany[2]}</p>
+            <Chat />
+            <div style={style.lobby}>
+              <div style={style.announcerRow}>
+                <p style={style.announcer}>Games: </p>
+                <p style={style.announcer}>Players: </p>
+              </div>
+              <div style={style.row}>
+                <button style={style.roomButton} onClick={() => this.subscribe(0)}>Game 1</button>
+                <p style={style.howMany}>{this.props.game.howMany[0]}</p>
+              </div>
+              <div style={style.row}>
+                <button style={style.roomButton} onClick={() => this.subscribe(1)}>Game 2</button>
+                <p style={style.howMany}>{this.props.game.howMany[1]}</p>
+              </div>
+              <div style={style.row}>
+                <button style={style.roomButton} onClick={() => this.subscribe(2)}>Game 3</button>
+                <p style={style.howMany}>{this.props.game.howMany[2]}</p>
+              </div>
             </div>
           </div>
         </div>

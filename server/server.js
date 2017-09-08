@@ -24,6 +24,7 @@ io.on('connection', (socket) => {
     socket.emit('update', howManyPeople(howMany));
 
     socket.emit('updateMembers', members);
+    socket.broadcast.emit('updateMembers', members);
 
     socket.broadcast.emit('newUser', 2, username);
   });

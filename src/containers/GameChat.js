@@ -84,14 +84,18 @@ class GameChat extends Component {
 
   @autobind
   change(event) {
-    this.setState({ input: event.target.value });
+    if (event.target.value !== '') {
+      this.setState({ input: event.target.value });
+    }
   }
 
   @autobind
   send() {
-    this.props.socket.socket.emit(
-      'gameMessage', this.props.game.roomId, this.state.input, this.props.game.username);
-    this.setState({ input: '' });
+    if (this.state.input !== '') {
+      this.props.socket.socket.emit(
+        'gameMessage', this.props.game.roomId, this.state.input, this.props.game.username);
+      this.setState({ input: '' });
+    }
   }
 
   render() {
