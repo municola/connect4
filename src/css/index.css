@@ -1,0 +1,40 @@
+.button {
+  border: 1px solid grey;
+  background-color: white;
+  width: 70px;
+  height: 70px;
+ }
+
+.button:hover {
+	cursor: pointer;
+	background-color: #9FACCA;
+}
+
+.buttonType2 {
+	color: #076689;
+	background-color: white;
+  border: 1px solid grey;
+  font-size: 18px;
+  padding: 10px;
+}
+
+.buttonType2:hover {
+	cursor: pointer;
+  color: white;
+	background-color: #8D96AD;	
+}
+
+.roomButton {
+  color: #076689;
+  background-color: white;
+  border: 1px solid grey;
+  font-size: 25px;
+  padding: 15px;
+  width: 100px;
+}
+
+.roomButton:hover {
+  background-color: #076689;
+  color: white;
+  border: none;
+}

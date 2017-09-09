@@ -7,7 +7,7 @@ const io = require('socket.io')(4003, {
   cookie: false,
 });
 
-const howMany = [[], [], []];
+const howMany = [[], [], [], [], []];
 let members = [];
 
 function howManyPeople(arr) {

@@ -21,15 +21,19 @@ const style = {
     height: '7vh',
   },
   memberTitle: {
+    color: 'white',
+    fontSize: '27px',
     margin: '0px',
     marginRight: '10px',
   },
   chatlog: {
-    height: '40vh',
+    height: '45vh',
     overflowY: 'auto',
     bottom: '0',
     padding: '10px',
-    backgroundColor: 'grey',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    backgroundColor: '#9FACCA',
   },
   form: {
     display: 'flex',
@@ -39,13 +43,13 @@ const style = {
     marginBottom: '1vh',
   },
   input: {
-    color: '#FBC75A',
+    color: '#076689',
     fontSize: '20px',
-    width: '90%',
+    width: '100%',
     border: 'none',
     margin: '0px',
     paddingLeft: '10px',
-    backgroundColor: '#908556',
+    backgroundColor: 'white',
   },
   submit: {
     fontSize: '20px',
@@ -55,8 +59,9 @@ const style = {
     backgroundColor: '#a66037',
   },
   fontOne: {
+    fontSize: '27px',
     margin: '0px',
-    color: 'grey',
+    color: '#9FACCA',
     marginRight: '20px',
   },
   you: {
@@ -65,13 +70,19 @@ const style = {
   },
   youFont: {
     fontSize: '25px',
-    color: '#794628',
+    color: '#57699A',
+    margin: '0px',
+  },
+  otherUserName: {
+    fontSize: '12px',
     margin: '0px',
   },
   otherUserFont: {
+    display: 'flex',
+    flexDirection: 'column',
     margin: '0px',
     fontSize: '25px',
-    color: '#FBC75A',
+    color: '#076689',
   },
   serverFont: {
     fontSize: '25px',
@@ -115,8 +126,8 @@ class Chat extends Component {
         }
         case 1 : {
           return (
-            <div style={style.otherUser}>
-              <p key={i} style={style.otherUserFont}>{item[1]} : {item[2]}</p>
+            <div key={i} style={style.otherUser}>
+              <p style={style.otherUserFont}>{item[1]}: {item[2]}</p>
             </div>
           );
         }
@@ -164,7 +175,6 @@ class Chat extends Component {
             value={this.state.input}
             onChange={(event) => this.change(event)}
           />
-          <button style={style.submit} type="submit">send</button>
         </LocalForm>
       </div>
     );

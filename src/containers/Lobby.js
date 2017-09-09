@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
+import styles from '../css/index.css';
 import Main from './Main.js';
 import Chat from './Chat.js';
 import {
@@ -19,7 +20,7 @@ const style = {
     flexDirection: 'column',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
-    backgroundColor: '#076689',
+    backgroundColor: '#1D2C54',
     minHeight: '100vh',
     justifyContent: 'center',
     alignItems: 'center',
@@ -28,11 +29,14 @@ const style = {
     display: 'flex',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
-    backgroundColor: '#076689',
+    backgroundColor: '#1D2C54',
     minHeight: '100vh',
     justifyContent: 'center',
   },
   innerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     padding: '10vh',
     width: '800px',
   },
@@ -43,7 +47,7 @@ const style = {
   },
   fontOne: {
     margin: '0px',
-    color: '#FBC75A',
+    color: 'white',
   },
   form: {
     display: 'flex',
@@ -54,32 +58,22 @@ const style = {
     width: '400px',
     padding: '10px',
     fontSize: '30px',
-    color: '#076689 ',
-    backgroundColor: '#FBC75A',
-    border: '1px solid grey',
+    color: '#57699A ',
+    backgroundColor: 'white',
+    border: '1px solid #57699A',
   },
   lobby: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '800px',
-    height: '13vh',
+    marginTop: '5vh',
+    height: '7vh',
   },
   row: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-  },
-  roomButton: {
-    color: '#076689 ',
-    backgroundColor: '#FBC75A',
-    border: '1px solid grey',
-    fontSize: '25px',
-    padding: '15px',
-  },
-  howMany: {
-    color: '#FBC75A',
-    marginBottom: '0px',
   },
   announcerRow: {
     marginTop: '16px',
@@ -89,7 +83,7 @@ const style = {
   },
   announcer: {
     margin: '0px',
-    color: '#FBC75A',
+    color: 'white',
   },
 };
 
@@ -139,19 +133,26 @@ class Lobby extends Component {
             <div style={style.lobby}>
               <div style={style.announcerRow}>
                 <p style={style.announcer}>Games: </p>
-                <p style={style.announcer}>Players: </p>
               </div>
               <div style={style.row}>
-                <button style={style.roomButton} onClick={() => this.subscribe(0)}>Game 1</button>
-                <p style={style.howMany}>{this.props.game.howMany[0]}</p>
+                <button className={styles.roomButton} onClick={() => this.subscribe(0)}>
+                  {this.props.game.howMany[0]}/2</button>
               </div>
               <div style={style.row}>
-                <button style={style.roomButton} onClick={() => this.subscribe(1)}>Game 2</button>
-                <p style={style.howMany}>{this.props.game.howMany[1]}</p>
+                <button className={styles.roomButton} onClick={() => this.subscribe(1)}>
+                  {this.props.game.howMany[1]}/2</button>
               </div>
               <div style={style.row}>
-                <button style={style.roomButton} onClick={() => this.subscribe(2)}>Game 3</button>
-                <p style={style.howMany}>{this.props.game.howMany[2]}</p>
+                <button className={styles.roomButton} onClick={() => this.subscribe(2)}>
+                  {this.props.game.howMany[2]}/2</button>
+              </div>
+              <div style={style.row}>
+                <button className={styles.roomButton} onClick={() => this.subscribe(3)}>
+                  {this.props.game.howMany[3]}/2</button>
+              </div>
+              <div style={style.row}>
+                <button className={styles.roomButton} onClick={() => this.subscribe(4)}>
+                  {this.props.game.howMany[4]}/2</button>
               </div>
             </div>
           </div>

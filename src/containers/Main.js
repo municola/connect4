@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import styles from '../css/ConnectFour.css';
+import styles from '../css/index.css';
 import wcn from '../static/winCombo.js';
 import GameChat from './GameChat.js';
 import {
@@ -22,23 +22,21 @@ const style = {
     display: 'flex',
     fontSize: '2rem',
     fontFamily: 'sans-serif',
-    backgroundColor: '#076689',
+    backgroundColor: '#1D2C54',
     minHeight: '100vh',
     justifyContent: 'center',
   },
   chatContainer: {
     display: 'flex',
-    width: '25%',
+    width: '30%',
     padding: '100px',
+    paddingRight: '0px',
   },
   gameContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignSelf: 'center',
-    width: '75%',
-  },
-  innerGameContainer: {
-
+    width: '70%',
   },
   buttonField: {
     display: 'flex',
@@ -52,7 +50,7 @@ const style = {
   },
   fontOne: {
     fontSize: '30px',
-    color: '#FBC75A',
+    color: '#9FACCA',
   },
   buttonArea: {
     display: 'flex',
@@ -65,13 +63,6 @@ const style = {
     width: '245px',
     display: 'flex',
     justifyContent: 'flex-end',
-  },
-  button: {
-    color: '#076689 ',
-    backgroundColor: '#FBC75A',
-    border: '1px solid grey',
-    fontSize: '20px',
-    padding: '10px',
   },
   leaveArea: {
     marginTop: '30px',

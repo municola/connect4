@@ -14,33 +14,49 @@ const style = {
   },
   chatlog: {
     height: '93%',
-    padding: '20px',
-    backgroundColor: 'grey',
+    overflowY: 'auto',
+    bottom: '0',
+    padding: '10px',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    backgroundColor: '#9FACCA',
   },
   form: {
     display: 'flex',
-    height: '7%',
     justifyContent: 'space-between',
+    height: '5vh',
+    marginTop: '1vh',
+    marginBottom: '1vh',
   },
   input: {
-    width: '70%',
-    padding: '15px',
-    fontSize: '20px',
     color: '#076689',
-    backgroundColor: '#FBC75A',
+    fontSize: '20px',
+    width: '100%',
     border: 'none',
-  },
-  submitButton: {
-    width: '30%',
+    margin: '0px',
+    paddingLeft: '10px',
+    backgroundColor: 'white',
   },
   you: {
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  youFont: {
+    fontSize: '25px',
+    color: '#57699A',
+    margin: '0px',
+  },
   otherUser: {
     display: 'flex',
     justifyContent: 'flex-start',
+  },
+  otherUserFont: {
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '0px',
+    fontSize: '25px',
+    color: '#076689',
   },
   chatFont: {
     margin: '0px',
@@ -66,12 +82,12 @@ class GameChat extends Component {
     return this.props.chat.gamechatlog.map((item, i) => {
       switch (item[0]) {
         case 0 : {
-          return <div style={style.you} key={i}><p style={style.chatFont}>{item[2]}</p></div>;
+          return <div style={style.you} key={i}><p style={style.youFont}>{item[2]}</p></div>;
         }
         case 1 : {
           return (
             <div style={style.otherUser} key={i}>
-              <p style={style.chatFont}>{item[1]} : {item[2]}</p>
+              <p style={style.otherUserFont}>{item[1]} : {item[2]}</p>
             </div>
           );
         }
@@ -84,9 +100,7 @@ class GameChat extends Component {
 
   @autobind
   change(event) {
-    if (event.target.value !== '') {
-      this.setState({ input: event.target.value });
-    }
+    this.setState({ input: event.target.value });
   }
 
   @autobind
@@ -106,11 +120,12 @@ class GameChat extends Component {
         </div>
         <LocalForm style={style.form} onSubmit={() => this.send()}>
           <input
+            autoFocus
+            placeholder="Type your message..."
             style={style.input}
             value={this.state.input}
             onChange={(event) => this.change(event)}
           />
-          <button style={style.submitButton} type="submit">send</button>
         </LocalForm>
       </div>
     );
