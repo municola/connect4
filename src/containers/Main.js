@@ -71,7 +71,7 @@ class App extends Component {
   connect() {
     const socket = io('http://localhost:5609');
     socket.emit('message', {});
-    socket.on('answer', (message) => this.setState({ message }));
+    socket.on('answer', (msg) => this.setState({ msg }));
   }
 
 
