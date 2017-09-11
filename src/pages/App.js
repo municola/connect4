@@ -10,7 +10,7 @@ import { initSocket } from '../actions/index.js';
 class App extends Component {
   @autobind
   componentDidMount() {
-    this.props.initSocket(io(''));
+    this.props.initSocket(io('/socket.io'));
     // this.props.initSocket(io('http://localhost:4003'));
   }
 
