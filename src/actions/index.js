@@ -120,6 +120,15 @@ export const newUser = (id, username) => {
   };
 };
 
+export const userLeft = (id, username) => {
+  return {
+    type: 'USER_LEFT',
+    id,
+    username,
+  };
+};
+
+
 export const setEnemyName = (name) => {
   return {
     type: 'SET_ENEMY_NAME',
@@ -133,5 +142,33 @@ export const newGameMessage = (id, username, message) => {
     id,
     username,
     message,
+  };
+};
+
+export const playerLeft = (id, username) => {
+  return {
+    type: 'PLAYER_LEFT',
+    id,
+    username,
+  };
+};
+
+export const playerJoined = (id, username) => {
+  return {
+    type: 'PLAYER_JOINED',
+    id,
+    username,
+  };
+};
+
+export const gameStartMessage = () => {
+  return {
+    type: 'GAME_START_MESSAGE',
+  };
+};
+
+export const leave = () => {
+  return {
+    type: 'LEAVE',
   };
 };

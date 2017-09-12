@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
-import { newMessage, newUser, newGameMessage } from '../actions/index.js';
+import {
+} from '../actions/index.js';
 
 const style = {
   container: {
@@ -62,6 +63,11 @@ const style = {
     margin: '0px',
     color: '#FBC75A',
   },
+  serverFont: {
+    fontSize: '25px',
+    margin: '0px',
+    color: 'white',
+  },
 };
 
 class GameChat extends Component {
@@ -70,12 +76,6 @@ class GameChat extends Component {
     this.state = {
       input: '',
     };
-  }
-
-  componentDidMount() {
-    this.props.socket.socket.on('newGameMessage', (id, username, message) => {
-      this.props.newGameMessage(id, username, message);
-    });
   }
 
   getChatlog() {
@@ -88,6 +88,13 @@ class GameChat extends Component {
           return (
             <div style={style.otherUser} key={i}>
               <p style={style.otherUserFont}>{item[1]} : {item[2]}</p>
+            </div>
+          );
+        }
+        case 2 : {
+          return (
+            <div style={style.server} key={i}>
+              <p style={style.serverFont}>{item[1]} {item[2]}</p>
             </div>
           );
         }
@@ -141,14 +148,14 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ newMessage, newUser, newGameMessage }, dispatch);
+  return bindActionCreators({
+  }, dispatch);
 }
 
 GameChat.propTypes = {
   chat: React.PropTypes.object.isRequired,
   socket: React.PropTypes.object.isRequired,
   game: React.PropTypes.object.isRequired,
-  newMessage: React.PropTypes.func.isRequired,
   newUser: React.PropTypes.func.isRequired,
   newGameMessage: React.PropTypes.func.isRequired,
 };

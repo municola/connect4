@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
-import { newMessage, newUser } from '../actions/index.js';
+import { newMessage, newUser, userLeft } from '../actions/index.js';
 
 const style = {
   body: {
@@ -99,15 +99,6 @@ class Chat extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.socket.socket.on('newMessage', (id, username, message) => {
-      this.props.newMessage(id, username, message);
-    });
-    this.props.socket.socket.on('newUser', (id, username) => {
-      this.props.newUser(id, username);
-    });
-  }
-
   getMembers() {
     return this.props.chat.members.map((item, i) => {
       return <p style={style.fontOne} key={i}>{item[1]}</p>;
@@ -190,7 +181,7 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ newMessage, newUser }, dispatch);
+  return bindActionCreators({ newMessage, newUser, userLeft }, dispatch);
 }
 
 Chat.propTypes = {

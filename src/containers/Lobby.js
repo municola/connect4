@@ -9,9 +9,21 @@ import Chat from './Chat.js';
 import {
   confirmed,
   connected,
+  enemyTurn,
+  firstTurn,
+  gameStartMessage,
+  newGameMessage,
+  newMessage,
+  newUser,
+  playerJoined,
+  playerLeft,
+  setEnemyName,
   setUsername,
+  setWinner,
+  symbol,
   updateHowMany,
   updateMembers,
+  userLeft,
 } from '../actions/index.js';
 
 const style = {
@@ -105,11 +117,45 @@ class Lobby extends Component {
       this.props.updateMembers(members);
     });
     this.props.socket.socket.on('connected', () => this.props.connected());
+    this.props.socket.socket.on('newMessage', (id, username, message) => {
+      this.props.newMessage(id, username, message);
+    });
+    this.props.socket.socket.on('newUser', (id, username) => {
+      this.props.newUser(id, username);
+    });
+    this.props.socket.socket.on('userLeft', (id, username) => {
+      this.props.userLeft(id, username);
+    });
+    this.props.socket.socket.on('ready', (sym, message) => {
+      this.props.gameStartMessage();
+      this.props.symbol(sym, message);
+    });
+    this.props.socket.socket.on('firstTurn', () => {
+      this.props.firstTurn();
+    });
+    this.props.socket.socket.on('turn', (table) => this.props.enemyTurn(table));
+    this.props.socket.socket.on('winner', () => {
+      this.props.setWinner('You Lost');
+    });
+    this.props.socket.socket.on('enemyName', (enemyName) => {
+      this.props.socket.socket.emit('enemyName', this.props.game.roomId, this.props.game.username);
+      this.props.setEnemyName(enemyName);
+    });
+    this.props.socket.socket.on('playerLeft', (id, username) => {
+      this.props.playerLeft(id, username);
+      this.props.setWinner('You won (Forfeit)');
+    });
+    this.props.socket.socket.on('playerJoined', (id, username) => {
+      this.props.playerJoined(id, username);
+    });
+    this.props.socket.socket.on('newGameMessage', (id, username, message) => {
+      this.props.newGameMessage(id, username, message);
+    });
   }
 
   @autobind
   subscribe(roomId) {
-    this.props.socket.socket.emit('subscribe', roomId);
+    this.props.socket.socket.emit('subscribe', roomId, this.props.game.username);
     this.props.socket.socket.on('update', (howMany) => {
       this.props.updateHowMany(howMany);
     });
@@ -185,20 +231,44 @@ function matchDispatchToProps(dispatch) {
   return bindActionCreators({
     confirmed,
     connected,
+    enemyTurn,
+    firstTurn,
+    gameStartMessage,
+    newGameMessage,
+    newMessage,
+    newUser,
+    playerJoined,
+    playerLeft,
+    setEnemyName,
     setUsername,
+    setWinner,
+    symbol,
     updateHowMany,
     updateMembers,
+    userLeft,
   }, dispatch);
 }
 
 Lobby.propTypes = {
   confirmed: React.PropTypes.func.isRequired,
   connected: React.PropTypes.func.isRequired,
+  enemyTurn: React.PropTypes.func.isRequired,
+  firstTurn: React.PropTypes.func.isRequired,
   game: React.PropTypes.object.isRequired,
+  gameStartMessage: React.PropTypes.func.isRequired,
+  newGameMessage: React.PropTypes.func.isRequired,
+  newMessage: React.PropTypes.func.isRequired,
+  newUser: React.PropTypes.func.isRequired,
+  playerJoined: React.PropTypes.func.isRequired,
+  playerLeft: React.PropTypes.func.isRequired,
+  setEnemyName: React.PropTypes.func.isRequired,
   setUsername: React.PropTypes.func.isRequired,
+  setWinner: React.PropTypes.func.isRequired,
   socket: React.PropTypes.object.isRequired,
+  symbol: React.PropTypes.func.isRequired,
   updateHowMany: React.PropTypes.func.isRequired,
   updateMembers: React.PropTypes.func.isRequired,
+  userLeft: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Lobby);

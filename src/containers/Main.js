@@ -5,15 +5,11 @@ import styles from '../css/index.css';
 import wcn from '../static/winCombo.js';
 import GameChat from './GameChat.js';
 import {
-  clickButton,
-  enemyTurn,
-  finishTurn,
-  firstTurn,
-  ready,
-  symbol,
-  setEnemyName,
   setWinner,
+  clickButton,
   undo,
+  finishTurn,
+  leave,
   unsubscribed,
 } from '../actions/index.js';
 
@@ -72,18 +68,6 @@ const style = {
 };
 
 class App extends Component {
-  componentDidMount() {
-    this.props.socket.socket.on('ready', (sym, message) => this.props.symbol(sym, message));
-    this.props.socket.socket.on('firstTurn', () => {
-      this.props.firstTurn();
-    });
-    this.props.socket.socket.on('turn', (table) => this.props.enemyTurn(table));
-    this.props.socket.socket.on('winner', () => {
-      this.props.setWinner('You Lost');
-    });
-    this.props.socket.socket.on('players', (enemyName) => this.props.setEnemyName(enemyName));
-  }
-
   getButtons() {
     return this.props.game.cells.map((tale, index) => {
       return (
@@ -147,8 +131,9 @@ class App extends Component {
   }
 
   leave() {
-    this.props.socket.socket.emit('unsubscribe', this.props.game.roomId);
+    this.props.socket.socket.emit('unsubscribe', this.props.game.roomId, this.props.game.username);
     this.props.socket.socket.on('unsubscribed', () => this.props.unsubscribed());
+    this.props.leave();
   }
 
   render() {
@@ -213,31 +198,24 @@ function mapStateToProps(state) {
 
 function matchDispatchToProps(dispatch) {
   return bindActionCreators({
-    clickButton,
-    enemyTurn,
-    finishTurn,
-    firstTurn,
-    ready,
-    symbol,
-    setEnemyName,
     setWinner,
+    clickButton,
     undo,
+    finishTurn,
+    leave,
     unsubscribed,
   }, dispatch);
 }
 
 App.propTypes = {
   clickButton: React.PropTypes.func.isRequired,
-  enemyTurn: React.PropTypes.func.isRequired,
-  firstTurn: React.PropTypes.func.isRequired,
   finishTurn: React.PropTypes.func.isRequired,
   game: React.PropTypes.object.isRequired,
   setWinner: React.PropTypes.func.isRequired,
   socket: React.PropTypes.object.isRequired,
-  symbol: React.PropTypes.func.isRequired,
   undo: React.PropTypes.func.isRequired,
   unsubscribed: React.PropTypes.func.isRequired,
-
+  leave: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);
