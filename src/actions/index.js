@@ -1,57 +1,125 @@
-export const clickButton = (index, symbol) => {
-  return {
-    type: 'CLICK_BUTTON',
-    index,
-    symbol,
-  };
-};
+import io from 'socket.io-client';
 
-export const confirmed = (roomId) => {
-  return {
-    type: 'CONFIRMED',
-    roomId,
-  };
-};
+// const socket = io('/socket.io');
+const socket = io('http://localhost:3000');
 
-export const connected = () => {
+socket.on('connected', () => {
   return {
     type: 'CONNECTED',
   };
-};
+});
 
-export const enemyTurn = (table) => {
+socket.on('subscribed', (howMany, roomId) => {
   return {
-    type: 'ENEMY_TURN',
-    table,
+    type: 'SUBSCRIBED',
+    howMany,
+    roomId,
   };
-};
+});
 
-export const finishTurn = (socket, table) => {
-  socket.emit('turn', table);
+socket.on('ready', (sym, msg, myTurn) => {
   return {
-    type: 'FINISH_TURN',
-    table,
+    type: 'READY',
+    sym,
+    msg,
+    myTurn,
   };
-};
+});
 
-export const firstTurn = () => {
+
+socket.on('newMessage', (id, username, message) => {
   return {
-    type: 'FIRST_TURN',
+    type: 'NEW_MESSAGE',
+    id,
+    username,
+    message,
   };
-};
+});
 
-export const initSocket = (socket) => {
-  return {
-    type: 'INIT_SOCKET',
-    socket,
-  };
-};
-
-export const setWinner = (message) => {
+socket.on('winner', () => {
+  const message = 'You lost';
   return {
     type: 'SET_WINNER',
     message,
   };
+});
+
+socket.on('turn', (table) => {
+  return {
+    type: 'ENEMY_TURN',
+    table,
+  };
+});
+
+socket.on('unsubscribed', () => {
+  return {
+    type: 'UNSUBSCRIBED',
+  };
+});
+
+socket.on('newGameMessage', (id, username, message) => {
+  return {
+    type: 'NEW_GAME_MESSAGE',
+    id,
+    username,
+    message,
+  };
+});
+
+socket.on('update', (howMany) => {
+  return {
+    type: 'UPDATE_HOW_MANY',
+    howMany,
+  };
+});
+
+socket.on('updateMembers', (members) => {
+  return {
+    type: 'UPDATE_MEMBERS',
+    members,
+  };
+});
+
+socket.on('newUser', (id, username) => {
+  return {
+    type: 'NEW_USER',
+    id,
+    username,
+  };
+});
+
+socket.on('playerJoined', (id, username) => {
+  return {
+    type: 'PLAYER_JOINED',
+    id,
+    username,
+  };
+});
+
+socket.on('playerLeft', (id, username) => {
+  const message = 'You won (Forfeit)';
+  return {
+    type: 'PLAYER_LEFT',
+    id,
+    username,
+    message,
+  };
+});
+
+socket.on('userLeft', (id, username) => {
+  return {
+    type: 'USER_LEFT',
+    id,
+    username,
+  };
+});
+
+export const connectMe = (username) => {
+  socket.emit('connectMe', username);
+};
+
+export const subscribe = (roomId, username) => {
+  socket.emit('subscribe', roomId, username);
 };
 
 export const setUsername = (username) => {
@@ -61,11 +129,39 @@ export const setUsername = (username) => {
   };
 };
 
-export const symbol = (sym, message) => {
+export const sendMessage = (message, username) => {
+  socket.emit('sendMessage', message, username);
+};
+
+export const setWinner = (message) => {
+  socket.emit('winner');
   return {
-    type: 'SYMBOL',
-    sym,
+    type: 'SET_WINNER',
     message,
+  };
+};
+
+export const finishTurn = (table) => {
+  socket.emit('turn', table);
+  return {
+    type: 'FINISH_TURN',
+    table,
+  };
+};
+
+export const unsubscribe = (roomId, username) => {
+  socket.emit('unsubscribe', roomId, username);
+};
+
+export const sendGameMessage = (roomId, message, username) => {
+  socket.emit('sendGameMessage', roomId, message, username);
+};
+
+export const clickButton = (index, symbol) => {
+  return {
+    type: 'CLICK_BUTTON',
+    index,
+    symbol,
   };
 };
 
@@ -82,84 +178,6 @@ export const undo = (turn) => {
   };
 };
 
-export const unsubscribed = () => {
-  return {
-    type: 'UNSUBSCRIBED',
-  };
-};
-
-export const updateHowMany = (howMany) => {
-  return {
-    type: 'UPDATE_HOW_MANY',
-    howMany,
-  };
-};
-
-export const updateMembers = (members) => {
-  console.log('updateMembers', members);
-  return {
-    type: 'UPDATE_MEMBERS',
-    members,
-  };
-};
-
-export const newMessage = (id, username, message) => {
-  return {
-    type: 'NEW_MESSAGE',
-    id,
-    username,
-    message,
-  };
-};
-
-export const newUser = (id, username) => {
-  return {
-    type: 'NEW_USER',
-    id,
-    username,
-  };
-};
-
-export const userLeft = (id, username) => {
-  return {
-    type: 'USER_LEFT',
-    id,
-    username,
-  };
-};
-
-
-export const setEnemyName = (name) => {
-  return {
-    type: 'SET_ENEMY_NAME',
-    name,
-  };
-};
-
-export const newGameMessage = (id, username, message) => {
-  return {
-    type: 'NEW_GAME_MESSAGE',
-    id,
-    username,
-    message,
-  };
-};
-
-export const playerLeft = (id, username) => {
-  return {
-    type: 'PLAYER_LEFT',
-    id,
-    username,
-  };
-};
-
-export const playerJoined = (id, username) => {
-  return {
-    type: 'PLAYER_JOINED',
-    id,
-    username,
-  };
-};
 
 export const gameStartMessage = () => {
   return {

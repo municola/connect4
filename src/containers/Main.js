@@ -10,7 +10,7 @@ import {
   undo,
   finishTurn,
   leave,
-  unsubscribed,
+  unsubscribe,
 } from '../actions/index.js';
 
 const style = {
@@ -88,7 +88,6 @@ class App extends Component {
         (this.props.game.cells[wcn[i][0]] === 'X' || this.props.game.cells[wcn[i][0]] === 'O')
       ) {
         this.props.setWinner('You Won');
-        this.props.socket.socket.emit('winner');
       }
     }
   }
@@ -122,7 +121,7 @@ class App extends Component {
           className={styles.buttonType2}
           onClick={() => {
             this.checkForWinner();
-            this.props.finishTurn(this.props.socket.socket, this.props.game.cells);
+            this.props.finishTurn(this.props.game.cells);
           }}
         >Finish Turn</button>
       );
@@ -131,8 +130,7 @@ class App extends Component {
   }
 
   leave() {
-    this.props.socket.socket.emit('unsubscribe', this.props.game.roomId, this.props.game.username);
-    this.props.socket.socket.on('unsubscribed', () => this.props.unsubscribed());
+    this.props.unsubscribe(this.props.game.roomId, this.props.game.username);
     this.props.leave();
   }
 
@@ -192,7 +190,6 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     game: state.game,
-    socket: state.socket,
   };
 }
 
@@ -203,7 +200,7 @@ function matchDispatchToProps(dispatch) {
     undo,
     finishTurn,
     leave,
-    unsubscribed,
+    unsubscribe,
   }, dispatch);
 }
 
@@ -212,9 +209,8 @@ App.propTypes = {
   finishTurn: React.PropTypes.func.isRequired,
   game: React.PropTypes.object.isRequired,
   setWinner: React.PropTypes.func.isRequired,
-  socket: React.PropTypes.object.isRequired,
   undo: React.PropTypes.func.isRequired,
-  unsubscribed: React.PropTypes.func.isRequired,
+  unsubscribe: React.PropTypes.func.isRequired,
   leave: React.PropTypes.func.isRequired,
 };
 

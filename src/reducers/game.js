@@ -15,6 +15,7 @@ const initialState = {
   username: '',
   winner: false,
 
+  buttons: [1, 2, 3, 4, 5],
   cells: [
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
     ' ', ' ', ' ', ' ', ' ', ' ', ' ',
@@ -112,9 +113,6 @@ export default function game(state = initialState, action) {
 
       return temp;
     }
-    case 'CONFIRMED' : {
-      return { ...state, subscribed: true, roomId: action.roomId };
-    }
     case 'CONNECTED' : {
       return { ...state, connected: true };
     }
@@ -136,20 +134,19 @@ export default function game(state = initialState, action) {
         message: 'Enemy Turn',
       };
     }
-    case 'FIRST_TURN' : {
-      return { ...state, myTurn: true };
-    }
-    case 'SET_ENEMY_NAME' : {
-      return { ...state, enemy: action.name };
+    case 'READY' : {
+      return {
+        ...state,
+        sym: action.sym,
+        message: action.msg,
+        myTurn: action.myTurn,
+      };
     }
     case 'SET_USERNAME' : {
       return { ...state, username: action.username };
     }
     case 'SET_WINNER' : {
       return { ...state, winner: true, winnerMessage: action.message, undoAvailable: false };
-    }
-    case 'SYMBOL' : {
-      return { ...state, mySymbol: action.sym, message: action.message };
     }
     case 'UNDO': {
       return {
@@ -163,6 +160,14 @@ export default function game(state = initialState, action) {
         undoAvailable: false,
         ready: false,
         myTurn: true,
+      };
+    }
+    case 'SUBSCRIBED' : {
+      return {
+        ...state,
+        howMany: action.howMany,
+        roomId: action.roomId,
+        subscribed: true,
       };
     }
     case 'UNSUBSCRIBED' : {
@@ -200,6 +205,14 @@ export default function game(state = initialState, action) {
     }
     case 'UPDATE_HOW_MANY' : {
       return { ...state, howMany: action.howMany };
+    }
+    case 'PLAYER_LEFT' : {
+      return {
+        ...state,
+        winner: true,
+        winnerMessage: action.message,
+        undoAvailable: false,
+      };
     }
     default: {
       return state;

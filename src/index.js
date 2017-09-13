@@ -1,6 +1,7 @@
-import React from 'react';
+import thunkMiddleware from 'redux-thunk';
+import promise from 'redux-promise-middleware';import React from 'react';
 import { render } from 'react-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import App from './pages/App';
@@ -10,8 +11,13 @@ import Lobby from './containers/Lobby';
 const store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ &&
-  window.__REDUX_DEVTOOLS_EXTENSION__()
-  );
+  window.__REDUX_DEVTOOLS_EXTENSION__(),
+  applyMiddleware(
+    thunkMiddleware,
+    // loggerMiddleware,
+    promise(),
+  ),
+);
 
 const root = document.createElement('div');
 document.body.style.margin = '0px';

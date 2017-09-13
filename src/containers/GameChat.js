@@ -3,8 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
-import {
-} from '../actions/index.js';
+import { sendGameMessage } from '../actions/index.js';
 
 const style = {
   container: {
@@ -113,8 +112,7 @@ class GameChat extends Component {
   @autobind
   send() {
     if (this.state.input !== '') {
-      this.props.socket.socket.emit(
-        'gameMessage', this.props.game.roomId, this.state.input, this.props.game.username);
+      this.props.sendGameMessage(this.props.game.roomId, this.state.input, this.props.game.username);
       this.setState({ input: '' });
     }
   }
@@ -142,22 +140,18 @@ class GameChat extends Component {
 function mapStateToProps(state) {
   return {
     chat: state.chat,
-    socket: state.socket,
     game: state.game,
   };
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({
-  }, dispatch);
+  return bindActionCreators({ sendGameMessage }, dispatch);
 }
 
 GameChat.propTypes = {
   chat: React.PropTypes.object.isRequired,
-  socket: React.PropTypes.object.isRequired,
   game: React.PropTypes.object.isRequired,
-  newUser: React.PropTypes.func.isRequired,
-  newGameMessage: React.PropTypes.func.isRequired,
+  sendGameMessage: React.PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(GameChat);
