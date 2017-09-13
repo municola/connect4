@@ -89,7 +89,7 @@ class Lobby extends Component {
   }
 
   printGameButtons() {
-    this.props.game.buttons.map((item, index) => {
+    return this.props.game.buttons.map((item, index) => {
       return (
         <div style={style.row}>
           <button

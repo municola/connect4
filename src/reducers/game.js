@@ -137,9 +137,9 @@ export default function game(state = initialState, action) {
     case 'READY' : {
       return {
         ...state,
-        sym: action.sym,
-        message: action.msg,
-        myTurn: action.myTurn,
+        mySymbol: action.symb,
+        message: action.msge,
+        myTurn: action.myTurne,
       };
     }
     case 'SET_USERNAME' : {

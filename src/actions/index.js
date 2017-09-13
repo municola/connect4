@@ -3,120 +3,55 @@ import io from 'socket.io-client';
 // const socket = io('/socket.io');
 const socket = io('http://localhost:3000');
 
-socket.on('connected', () => {
-  return {
-    type: 'CONNECTED',
+export function connectMe(usernamee) {
+  return (dispatch) => {
+    socket.emit('connectMe', usernamee);
+    socket.on('connected', () => {
+      dispatch({ type: 'CONNECTED' });
+    });
+    socket.on('userLeft', (id, username) => {
+      dispatch({ type: 'USER_LEFT', id, username });
+    });
+    socket.on('playerLeft', (id, username) => {
+      const message = 'You won (Forfeit)';
+      dispatch({ type: 'PLAYER_LEFT', id, username, message });
+    });
+    socket.on('playerJoined', (id, username) => {
+      dispatch({ type: 'PLAYER_JOINED', id, username });
+    });
+    socket.on('newUser', (id, username) => {
+      dispatch({ type: 'NEW_USER', id, username });
+    });
+    socket.on('updateMembers', (members) => {
+      dispatch({ type: 'UPDATE_MEMBERS', members });
+    });
+    socket.on('update', (howMany) => {
+      dispatch({ type: 'UPDATE_HOW_MANY', howMany });
+    });
+    socket.on('newGameMessage', (id, username, message) => {
+      dispatch({ type: 'NEW_GAME_MESSAGE', id, username, message });
+    });
+    socket.on('unsubscribed', () => {
+      dispatch({ type: 'UNSUBSCRIBED' });
+    });
+    socket.on('turn', (table) => {
+      dispatch({ type: 'ENEMY_TURN', table });
+    });
+    socket.on('winner', () => {
+      const message = 'You lost';
+      dispatch({ type: 'SET_WINNER', message });
+    });
+    socket.on('newMessage', (id, username, message) => {
+      dispatch({ type: 'NEW_MESSAGE', id, username, message });
+    });
+    socket.on('ready', (symb, msge, myTurne) => {
+      dispatch({ type: 'READY', symb, msge, myTurne });
+    });
+    socket.on('subscribed', (howMany, roomId) => {
+      dispatch({ type: 'SUBSCRIBED', howMany, roomId });
+    });
   };
-});
-
-socket.on('subscribed', (howMany, roomId) => {
-  return {
-    type: 'SUBSCRIBED',
-    howMany,
-    roomId,
-  };
-});
-
-socket.on('ready', (sym, msg, myTurn) => {
-  return {
-    type: 'READY',
-    sym,
-    msg,
-    myTurn,
-  };
-});
-
-
-socket.on('newMessage', (id, username, message) => {
-  return {
-    type: 'NEW_MESSAGE',
-    id,
-    username,
-    message,
-  };
-});
-
-socket.on('winner', () => {
-  const message = 'You lost';
-  return {
-    type: 'SET_WINNER',
-    message,
-  };
-});
-
-socket.on('turn', (table) => {
-  return {
-    type: 'ENEMY_TURN',
-    table,
-  };
-});
-
-socket.on('unsubscribed', () => {
-  return {
-    type: 'UNSUBSCRIBED',
-  };
-});
-
-socket.on('newGameMessage', (id, username, message) => {
-  return {
-    type: 'NEW_GAME_MESSAGE',
-    id,
-    username,
-    message,
-  };
-});
-
-socket.on('update', (howMany) => {
-  return {
-    type: 'UPDATE_HOW_MANY',
-    howMany,
-  };
-});
-
-socket.on('updateMembers', (members) => {
-  return {
-    type: 'UPDATE_MEMBERS',
-    members,
-  };
-});
-
-socket.on('newUser', (id, username) => {
-  return {
-    type: 'NEW_USER',
-    id,
-    username,
-  };
-});
-
-socket.on('playerJoined', (id, username) => {
-  return {
-    type: 'PLAYER_JOINED',
-    id,
-    username,
-  };
-});
-
-socket.on('playerLeft', (id, username) => {
-  const message = 'You won (Forfeit)';
-  return {
-    type: 'PLAYER_LEFT',
-    id,
-    username,
-    message,
-  };
-});
-
-socket.on('userLeft', (id, username) => {
-  return {
-    type: 'USER_LEFT',
-    id,
-    username,
-  };
-});
-
-export const connectMe = (username) => {
-  socket.emit('connectMe', username);
-};
+}
 
 export const subscribe = (roomId, username) => {
   socket.emit('subscribe', roomId, username);
@@ -177,7 +112,6 @@ export const undo = (turn) => {
     turn: 1,
   };
 };
-
 
 export const gameStartMessage = () => {
   return {
