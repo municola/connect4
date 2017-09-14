@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { LocalForm } from 'react-redux-form';
+import { autobind } from 'core-decorators';
 import styles from '../css/index.css';
 import Main from './Main.js';
 import Chat from './Chat.js';
@@ -103,6 +104,15 @@ class Lobby extends Component {
     });
   }
 
+  @autobind
+  send() {
+    if (this.state.input !== '') {
+      console.log('reached send');
+      this.props.connectMe(this.props.game.username);
+      this.setState({ input: '' });
+    }
+  }
+
   render() {
     if (this.props.game.connected) {
       if (this.props.game.subscribed) {
@@ -129,7 +139,7 @@ class Lobby extends Component {
       <div style={style.body}>
         <LocalForm
           style={style.form}
-          onSubmit={() => this.props.connectMe(this.props.game.username)}
+          onSubmit={() => this.send()}
         >
           <input
             autoFocus
@@ -137,6 +147,9 @@ class Lobby extends Component {
             placeholder="Username"
             onChange={(event) => this.props.setUsername(event.target.value)}
           />
+          <button onClick={() => this.send()}>
+            send
+          </button>
         </LocalForm>
       </div>
     );

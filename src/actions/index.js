@@ -5,8 +5,10 @@ const socket = io('/socket.io');
 
 export function connectMe(usernamee) {
   return (dispatch) => {
+    console.log('reached connnect Me in ACTION');
     socket.emit('connectMe', usernamee);
     socket.on('connected', () => {
+      console.log('reached socket.on(connectd)');
       dispatch({ type: 'CONNECTED' });
     });
     socket.on('userLeft', (id, username) => {
