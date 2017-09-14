@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 
-// const socket = io('/socket.io');
-const socket = io('http://localhost:3000');
+const socket = io('/socket.io');
+// const socket = io('http://localhost:3000');
 
 export function connectMe(usernamee) {
   return (dispatch) => {
@@ -55,6 +55,7 @@ export function connectMe(usernamee) {
 
 export const subscribe = (roomId, username) => {
   socket.emit('subscribe', roomId, username);
+  return { type: 'NONE' };
 };
 
 export const setUsername = (username) => {
@@ -66,6 +67,7 @@ export const setUsername = (username) => {
 
 export const sendMessage = (message, username) => {
   socket.emit('sendMessage', message, username);
+  return { type: 'NONE' };
 };
 
 export const setWinner = (message) => {
@@ -86,10 +88,12 @@ export const finishTurn = (table) => {
 
 export const unsubscribe = (roomId, username) => {
   socket.emit('unsubscribe', roomId, username);
+  return { type: 'NONE' };
 };
 
 export const sendGameMessage = (roomId, message, username) => {
   socket.emit('sendGameMessage', roomId, message, username);
+  return { type: 'NONE' };
 };
 
 export const clickButton = (index, symbol) => {
