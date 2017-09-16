@@ -7,6 +7,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import App from './pages/App';
 import reducer from './reducers';
 import Lobby from './containers/Lobby';
+import { attachStore } from './actions/socketio.js';
 
 const store = createStore(
   reducer,
@@ -18,6 +19,8 @@ const store = createStore(
     promise(),
   ),
 );
+
+attachStore(store);
 
 const root = document.createElement('div');
 document.body.style.margin = '0px';

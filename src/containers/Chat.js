@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
-import { sendMessage } from '../actions/index.js';
+import { sendMessage } from '../actions/socketio.js';
 
 const style = {
   body: {
@@ -144,7 +144,7 @@ class Chat extends Component {
   @autobind
   send() {
     if (this.state.input !== '') {
-      this.props.sendMessage(this.state.input, this.props.game.username);
+      sendMessage(this.state.input, this.props.game.username);
       this.setState({ input: '' });
     }
   }
@@ -179,14 +179,9 @@ function mapStateToProps(state) {
   };
 }
 
-function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ sendMessage }, dispatch);
-}
-
 Chat.propTypes = {
   chat: React.PropTypes.object.isRequired,
   game: React.PropTypes.object.isRequired,
-  sendMessage: React.PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, matchDispatchToProps)(Chat);
+export default connect(mapStateToProps)(Chat);

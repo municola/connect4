@@ -5,13 +5,14 @@ import styles from '../css/index.css';
 import wcn from '../static/winCombo.js';
 import GameChat from './GameChat.js';
 import {
-  setWinner,
   clickButton,
   undo,
-  finishTurn,
   leave,
-  unsubscribe,
+  setWinner,
+  finishTurn,
 } from '../actions/index.js';
+
+import { unsubscribe } from '../actions/socketio.js';
 
 const style = {
   body: {
@@ -130,7 +131,7 @@ class App extends Component {
   }
 
   leave() {
-    this.props.unsubscribe(this.props.game.roomId, this.props.game.username);
+    unsubscribe(this.props.game.roomId, this.props.game.username);
     this.props.leave();
   }
 
@@ -200,7 +201,6 @@ function matchDispatchToProps(dispatch) {
     undo,
     finishTurn,
     leave,
-    unsubscribe,
   }, dispatch);
 }
 
@@ -210,7 +210,6 @@ App.propTypes = {
   game: React.PropTypes.object.isRequired,
   setWinner: React.PropTypes.func.isRequired,
   undo: React.PropTypes.func.isRequired,
-  unsubscribe: React.PropTypes.func.isRequired,
   leave: React.PropTypes.func.isRequired,
 };
 

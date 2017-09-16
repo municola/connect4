@@ -6,7 +6,8 @@ import { autobind } from 'core-decorators';
 import styles from '../css/index.css';
 import Main from './Main.js';
 import Chat from './Chat.js';
-import { connectMe, subscribe, setUsername } from '../actions/index.js';
+import { setUsername } from '../actions/index.js';
+import { connectMe, subscribe } from '../actions/socketio.js';
 
 const style = {
   body: {
@@ -90,27 +91,22 @@ class Lobby extends Component {
   }
 
   printGameButtons() {
-    return this.props.game.buttons.map((item, index) => {
-      return (
-        <div style={style.row}>
-          <button
-            className={styles.roomButton}
-            onClick={() => this.props.subscribe(index, this.props.game.username)}
-          >
-            {this.props.game.howMany[index]}/2
-          </button>
-        </div>
-      );
-    });
+    return this.props.game.buttons.map((item, index) => (
+      <div style={style.row}>
+        <button
+          className={styles.roomButton}
+          onClick={() => subscribe(index, this.props.game.username)}
+        >
+          {this.props.game.howMany[index]}/2
+        </button>
+      </div>
+    ));
   }
 
   @autobind
   send() {
-    if (this.state.input !== '') {
-      console.log('reached send');
-      this.props.connectMe(this.props.game.username);
-      this.setState({ input: '' });
-    }
+    connectMe(this.props.game.username);
+    this.setState({ input: '' });
   }
 
   render() {
@@ -164,12 +160,10 @@ function mapStateToProps(state) {
 }
 
 function matchDispatchToProps(dispatch) {
-  return bindActionCreators({ connectMe, subscribe, setUsername }, dispatch);
+  return bindActionCreators({ setUsername }, dispatch);
 }
 
 Lobby.propTypes = {
-  connectMe: React.PropTypes.func.isRequired,
-  subscribe: React.PropTypes.func.isRequired,
   setUsername: React.PropTypes.func.isRequired,
   game: React.PropTypes.object.isRequired,
 };
