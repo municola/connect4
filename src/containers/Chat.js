@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { autobind } from 'core-decorators';
 import { LocalForm } from 'react-redux-form';
@@ -27,7 +26,7 @@ const style = {
     marginRight: '10px',
   },
   chatlog: {
-    height: '45vh',
+    height: '44vh',
     overflowY: 'auto',
     bottom: '0',
     padding: '10px',
@@ -82,7 +81,7 @@ const style = {
     flexDirection: 'column',
     margin: '0px',
     fontSize: '25px',
-    color: '#076689',
+    color: '#51659B',
   },
   serverFont: {
     fontSize: '25px',

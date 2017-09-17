@@ -83,13 +83,6 @@ const style = {
 };
 
 class Lobby extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      input: '',
-    };
-  }
-
   printGameButtons() {
     return this.props.game.buttons.map((item, index) => (
       <div style={style.row}>
@@ -105,8 +98,11 @@ class Lobby extends Component {
 
   @autobind
   send() {
-    connectMe(this.props.game.username);
-    this.setState({ input: '' });
+    if (this.props.game.username !== '' &&
+      this.props.game.username !== undefined
+      && this.props.game.username !== null) {
+      connectMe(this.props.game.username);
+    }
   }
 
   render() {
@@ -141,11 +137,8 @@ class Lobby extends Component {
             autoFocus
             style={style.input}
             placeholder="Username"
-            onChange={(event) => this.props.setUsername(event.target.value)}
+            onChange={(event) => this.props.setUsername(event.target.value.replace(/\s+/g, ''))}
           />
-          <button onClick={() => this.send()}>
-            send
-          </button>
         </LocalForm>
       </div>
     );
